@@ -29,11 +29,31 @@ void ATankAIController::BeginPlay()
 	}
 	else
 	{
-		QUICK_LOG_ERROR("Possessed pawn is not Tank")
+		QUICK_LOG_ERROR("Possessed pawn is not Tank or null")
 	}
+
+	auto PlayerTank = GetPlayerTank();
+	if (PlayerTank)
+	{
+		QUICK_LOG_WARN("GetPlayerTank = %s", *GetPlayerTank()->GetName())
+	}
+	else
+	{
+		QUICK_LOG_ERROR("Player pawn is not Tank or null")
+	}
+}
+
+void ATankAIController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
 }
 
 ATank* ATankAIController::GetControlledTank() const
 {
 	return Cast<ATank>(GetPawn());
+}
+
+ATank* ATankAIController::GetPlayerTank() const
+{
+	return Cast<ATank>(GetWorld()->GetFirstPlayerController()->GetPawn());
 }

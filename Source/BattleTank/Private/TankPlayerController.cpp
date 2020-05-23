@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TankPlayerController.h"
+#include "DrawDebugHelpers.h"
 
 #define QUICK_LOG_WARN(Format, ...) \
 { \
@@ -33,7 +34,49 @@ void ATankPlayerController::BeginPlay()
 	}
 }
 
+void ATankPlayerController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	AimTowardsCrosshair();
+}
+
 ATank* ATankPlayerController::GetControlledTank() const
 {
 	return Cast<ATank>(GetPawn());
+}
+
+void ATankPlayerController::AimTowardsCrosshair()
+{
+	if (!GetControlledTank()) { return; }
+	
+	FVector AimLocation;
+
+	if (GetCrosshairAimLocation(AimLocation))
+	{
+		QUICK_LOG_WARN("AimLocation = %s", *AimLocation.ToString())
+
+		DrawDebugSphere(GetWorld(), AimLocation, 10, 16, FColor::Red);
+	}
+}
+
+bool ATankPlayerController::GetCrosshairAimLocation(FVector& OutAimLocation) const
+{
+	int32 ScreenX;
+	int32 ScreenY;
+	GetViewportSize(ScreenX, ScreenY);
+	FVector2D ScreenPosition = { ScreenX * 0.5f, ScreenY * 0.33f };
+
+	bool bHit;
+	FHitResult Hit;
+
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(GetControlledTank());
+	Params.bTraceComplex = true;
+
+	bHit = GetWorld()->GetFirstPlayerController()->GetHitResultAtScreenPosition(ScreenPosition, ECC_WorldDynamic, Params, Hit);
+
+	if (bHit) { OutAimLocation = Hit.ImpactPoint; }
+
+	return bHit;
 }
