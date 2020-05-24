@@ -23,6 +23,10 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	ATank* GetControlledTank() const;
+	
+	/** Crosshair position in the viewport in percentage. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = TankPlayerController, meta = (ClampMin = 0, ClampMax = 1))
+		FVector2D CrosshairPosition = { 0.5f, 0.33f };
 
 private:
 	/** Aim the tank's barrel at the location where the player's crosshair intersects the world. */

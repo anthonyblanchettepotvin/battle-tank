@@ -62,10 +62,9 @@ void ATankPlayerController::AimTowardsCrosshair()
 
 bool ATankPlayerController::GetCrosshairAimLocation(FVector& OutAimLocation) const
 {
-	int32 ScreenX;
-	int32 ScreenY;
-	GetViewportSize(ScreenX, ScreenY);
-	FVector2D ScreenPosition = { ScreenX * 0.5f, ScreenY * 0.33f };
+	int32 ViewportX, ViewportY;
+	GetViewportSize(ViewportX, ViewportY);
+	FVector2D ScreenPosition = { ViewportX * CrosshairPosition.X, ViewportY * CrosshairPosition.Y };
 
 	bool bHit;
 	FHitResult Hit;
@@ -74,7 +73,7 @@ bool ATankPlayerController::GetCrosshairAimLocation(FVector& OutAimLocation) con
 	Params.AddIgnoredActor(GetControlledTank());
 	Params.bTraceComplex = true;
 
-	bHit = GetWorld()->GetFirstPlayerController()->GetHitResultAtScreenPosition(ScreenPosition, ECC_WorldDynamic, Params, Hit);
+	bHit = GetHitResultAtScreenPosition(ScreenPosition, ECC_Visibility, Params, Hit);
 
 	if (bHit) { OutAimLocation = Hit.ImpactPoint; }
 
