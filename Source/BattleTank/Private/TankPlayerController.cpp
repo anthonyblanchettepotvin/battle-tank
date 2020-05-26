@@ -38,6 +38,8 @@ void ATankPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (!GetControlledTank()) { return; }
+
 	AimTowardsCrosshair();
 }
 
@@ -54,9 +56,7 @@ void ATankPlayerController::AimTowardsCrosshair()
 
 	if (GetCrosshairAimLocation(AimLocation))
 	{
-		QUICK_LOG_WARN("AimLocation = %s", *AimLocation.ToString())
-
-		DrawDebugSphere(GetWorld(), AimLocation, 10, 16, FColor::Red);
+		GetControlledTank()->AimAt(AimLocation);
 	}
 }
 
