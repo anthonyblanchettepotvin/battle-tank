@@ -20,8 +20,15 @@
 		*Message) \
 }
 
+//ATankAIController::ATankAIController()
+//{
+//	PrimaryActorTick.bCanEverTick = true;
+//}
+
 void ATankAIController::BeginPlay()
 {
+	Super::BeginPlay();
+
 	auto ControlledTank = GetControlledTank();
 	if (ControlledTank)
 	{

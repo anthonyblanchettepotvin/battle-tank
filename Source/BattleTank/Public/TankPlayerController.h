@@ -32,7 +32,8 @@ private:
 	/** Aim the tank's barrel at the location where the player's crosshair intersects the world. */
 	void AimTowardsCrosshair();
 
-	/** Get the world space location where the player's crosshair is aiming.
+	/**
+	 * Get the world space location where the player's crosshair is aiming.
 	 * @param OutAimLocation The world space location where the player's crosshair is aiming
 	 * @return TRUE if the player's crosshair is aiming at something, FALSE otherwise
 	 */

@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "TankAimingComponent.h"
 
 UTankAimingComponent::UTankAimingComponent()
@@ -21,4 +20,9 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 void UTankAimingComponent::AimAt(FVector Location)
 {
 	UE_LOG(LogTemp, Warning, TEXT("%s aiming at %s"), *GetOwner()->GetName(), *Location.ToString())
+}
+
+void UTankAimingComponent::SetBarrelComponentReference(UStaticMeshComponent* Value)
+{
+	BarrelComponentReference = Value;
 }

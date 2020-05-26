@@ -37,4 +37,8 @@ public:
 	 * @param Location The location at which the tank should aim
 	 */
 	virtual void AimAt(FVector Location);
+
+	// Setters/getters
+	UFUNCTION(BlueprintCallable, Category = Tank)
+		void SetBarrelComponentReference(UStaticMeshComponent* Value);
 };
