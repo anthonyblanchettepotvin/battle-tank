@@ -20,7 +20,8 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-	UStaticMeshComponent* BarrelComponentReference = nullptr;
+	UPROPERTY()
+		UStaticMeshComponent* BarrelComponentReference = nullptr;
 
 public:	
 	// Called every frame
