@@ -4,10 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
-#include "Engine/World.h"
-#include "GameFramework/PlayerController.h"
-#include "Tank.h"
 #include "TankAIController.generated.h"
+
+class ATank;
 
 /**
  * TankPlayerController is the base AI controller for a Tank pawn.

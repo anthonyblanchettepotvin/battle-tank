@@ -1,5 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "Engine/World.h"
+#include "GameFramework/PlayerController.h"
+#include "Tank.h"
 #include "TankAIController.h"
 
 #define QUICK_LOG_WARN(Format, ...) \

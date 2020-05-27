@@ -6,6 +6,8 @@
 #include "Components/ActorComponent.h"
 #include "TankAimingComponent.generated.h"
 
+class UTankBarrelComponent;
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BATTLETANK_API UTankAimingComponent : public UActorComponent
 {
@@ -21,7 +23,7 @@ protected:
 
 private:
 	UPROPERTY()
-		UStaticMeshComponent* BarrelComponentReference = nullptr;
+		UTankBarrelComponent* BarrelComponentReference = nullptr;
 
 public:	
 	// Called every frame
@@ -30,9 +32,12 @@ public:
 	/**
 	 * Tell the component to make the tank aim at a location.
 	 * @param Location The location at which the tank should aim
+	 * @param InitialProjectileVelocity The initial velocity at which a projectile is fired
 	 */
-	virtual void AimAt(FVector Location);
+	virtual void AimAt(FVector Location, float InitialProjectileVelocity);
+
+	virtual void MoveBarrelTowards(FVector AimDirection);
 
 	// Getters/setters
-	void SetBarrelComponentReference(UStaticMeshComponent* Value);
+	void SetBarrelComponentReference(UTankBarrelComponent* Value);
 };

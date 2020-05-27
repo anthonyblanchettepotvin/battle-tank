@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
-#include "TankAimingComponent.h"
 #include "Tank.generated.h"
+
+class UTankAimingComponent;
+class UTankBarrelComponent;
 
 UCLASS()
 class BATTLETANK_API ATank : public APawn
@@ -40,5 +42,9 @@ public:
 
 	// Setters/getters
 	UFUNCTION(BlueprintCallable, Category = Tank)
-		void SetBarrelComponentReference(UStaticMeshComponent* Value);
+		void SetBarrelComponentReference(UTankBarrelComponent* Value);
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tank | Firing")
+		float InitialProjectileVelocity = 100000; // 100cm/s * 1000 m/s = 100000 cm/s = 1000 m/s
 };
