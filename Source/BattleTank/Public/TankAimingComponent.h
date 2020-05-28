@@ -21,8 +21,7 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-private:
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 		UTankBarrelComponent* BarrelComponentReference = nullptr;
 
 public:	

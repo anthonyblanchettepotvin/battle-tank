@@ -61,8 +61,7 @@ void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 	auto AimRotation = AimDirection.Rotation();
 	auto DeltaRotation = AimRotation - BarrelRotation;
 
-	UE_LOG(LogTemp, Warning, TEXT("%s - BarrelRotation = %s"), *GetOwner()->GetName(), *BarrelRotation.ToString())
-	UE_LOG(LogTemp, Warning, TEXT("%s - AimRotation = %s"), *GetOwner()->GetName(), *AimRotation.ToString())
+	BarrelComponentReference->Elevate(5);
 }
 
 void UTankAimingComponent::SetBarrelComponentReference(UTankBarrelComponent* Value)

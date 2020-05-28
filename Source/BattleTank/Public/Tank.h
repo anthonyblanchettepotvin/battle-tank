@@ -24,7 +24,7 @@ protected:
 
 private:
 	// Components
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = TankPlayerController, meta = (AllowPrivateAccess = true))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Tank, meta = (AllowPrivateAccess = true))
 		UTankAimingComponent* TankAimingComponent = nullptr;
 
 public:	
@@ -46,5 +46,5 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tank | Firing")
-		float InitialProjectileVelocity = 100000; // 100cm/s * 1000 m/s = 100000 cm/s = 1000 m/s
+		float InitialProjectileVelocity = 10000; // 100cm/s * 100 m/s = 10000 cm/s = 100 m/s
 };

@@ -2,7 +2,7 @@
 
 #include "TankBarrelComponent.h"
 
-void Elevate(float DegreesPerSecond)
+void UTankBarrelComponent::Elevate(float DegreesPerSecond)
 {
-
+	UE_LOG(LogTemp, Warning, TEXT("%s - Elevate - %f"), *GetOwner()->GetName(), DegreesPerSecond)
 }
