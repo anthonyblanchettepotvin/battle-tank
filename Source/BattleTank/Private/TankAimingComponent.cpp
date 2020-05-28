@@ -27,8 +27,9 @@ void UTankAimingComponent::AimAt(FVector Location, float InitialProjectileVeloci
 	FVector StartLocation = BarrelComponentReference->GetSocketLocation(FName("Muzzle"));
 
 	TArray<AActor*> ActorsToIgnore;
+	ActorsToIgnore.Add(GetOwner());
 
-	if (UGameplayStatics::SuggestProjectileVelocity(
+	bool bSolutionFound = UGameplayStatics::SuggestProjectileVelocity(
 		this,
 		LaunchVelocity,
 		StartLocation,
@@ -37,14 +38,23 @@ void UTankAimingComponent::AimAt(FVector Location, float InitialProjectileVeloci
 		false,
 		0.0f,
 		0.0f,
-		ESuggestProjVelocityTraceOption::TraceFullPath,
+		ESuggestProjVelocityTraceOption::DoNotTrace,
 		FCollisionResponseParams::DefaultResponseParam,
 		ActorsToIgnore,
-		true))
-	{
+		false
+	);
+
+	UE_LOG(LogTemp, Warning, TEXT("%s - AimAt - bSolutionFound = %s"), *GetOwner()->GetName(), bSolutionFound ? TEXT("true") : TEXT("false"));
+	if (bSolutionFound) {
 		FVector AimDirection = LaunchVelocity.GetSafeNormal();
+
+		UE_LOG(LogTemp, Warning, TEXT("%s - AimAt - Aim direction found = %s"), *GetOwner()->GetName(), *AimDirection.ToString());
+
 		MoveBarrelTowards(AimDirection);
-		UE_LOG(LogTemp, Warning, TEXT("%s aiming at %s"), *GetOwner()->GetName(), *AimDirection.ToString())
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s - AimAt - Aim direction not found"), *GetOwner()->GetName());
 	}
 }
 
