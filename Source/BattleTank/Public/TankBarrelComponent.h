@@ -35,7 +35,6 @@ public:
 	 */
 	void Elevate(float RelativeSpeed);
 
-
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Barrel")
 		float MinElevationDegrees = 0.0f;

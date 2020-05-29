@@ -71,3 +71,8 @@ void UTankAimingComponent::SetBarrelComponentReference(UTankBarrelComponent* Val
 {
 	BarrelComponentReference = Value;
 }
+
+void UTankAimingComponent::SetTurretComponentReference(UTankTurretComponent* Value)
+{
+	TurretComponentReference = Value;
+}
