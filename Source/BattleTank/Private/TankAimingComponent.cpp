@@ -44,8 +44,8 @@ void UTankAimingComponent::AimAt(FVector Location, float InitialProjectileVeloci
 		false
 	);
 
-	UE_LOG(LogTemp, Warning, TEXT("%s - AimAt - bSolutionFound = %s"), *GetOwner()->GetName(), bSolutionFound ? TEXT("true") : TEXT("false"));
-	if (bSolutionFound) {
+	if (bSolutionFound)
+	{
 		FVector AimDirection = LaunchVelocity.GetSafeNormal();
 
 		UE_LOG(LogTemp, Warning, TEXT("%s - AimAt - Aim direction found = %s"), *GetOwner()->GetName(), *AimDirection.ToString());
@@ -60,18 +60,11 @@ void UTankAimingComponent::AimAt(FVector Location, float InitialProjectileVeloci
 
 void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 {
-	// Get the intended aim direction
-	// Get the current aim direction
-	// Lerp between the current aim direction and the intended aim direction to give the new aim direction
-	// Multiply the result by the barrel move speed
-	// Convert the new aim direction into the new barrel rotation
-	// Set the new barrel rotation
-
 	auto BarrelRotation = BarrelComponentReference->GetForwardVector().Rotation();
 	auto AimRotation = AimDirection.Rotation();
 	auto DeltaRotation = AimRotation - BarrelRotation;
 
-	BarrelComponentReference->Elevate(5);
+	BarrelComponentReference->Elevate(DeltaRotation.Pitch);
 }
 
 void UTankAimingComponent::SetBarrelComponentReference(UTankBarrelComponent* Value)
