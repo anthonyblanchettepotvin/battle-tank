@@ -9,6 +9,7 @@
 class UTankAimingComponent;
 class UTankBarrelComponent;
 class UTankTurretComponent;
+class AProjectile;
 
 UCLASS()
 class BATTLETANK_API ATank : public APawn
@@ -16,24 +17,34 @@ class BATTLETANK_API ATank : public APawn
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this pawn's properties
+	/** Default constructor for ATank. */
 	ATank();
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
 private:
 	// Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Tank, meta = (AllowPrivateAccess = true))
 		UTankAimingComponent* AimingComponent = nullptr;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+protected:
+	// Properties
+	/** The projectile to be fired by the tank. */
+	UPROPERTY(EditAnywhere, Category = "Tank|Firing")
+		TSubclassOf<AProjectile> Projectile = nullptr;
 
-	// Called to bind functionality to input
+	/** The initial speed of the projectile being fired by the tank. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tank|Firing")
+		float InitialProjectileSpeed = 10000;
+
+	/** Reference to the barrel component of the tank. */
+	UTankBarrelComponent* Barrel = nullptr;
+
+	// ~ Begin APawn Interface
+	virtual void BeginPlay() override;
+
+public:
+	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	// ~ End APawn Interface
 
 	/**
 	 * Make the tank aim at a location.
@@ -41,6 +52,9 @@ public:
 	 */
 	virtual void AimAt(FVector Location);
 
+	/** 
+	 * Make the tank fire a projectile. 
+	 */
 	UFUNCTION(BlueprintCallable, Category = Tank)
 		virtual void Fire();
 
@@ -50,8 +64,4 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = Tank)
 		void SetTurretComponentReference(UTankTurretComponent* value);
-
-protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tank | Firing")
-		float InitialProjectileVelocity = 10000; // 100cm/s * 100 m/s = 10000 cm/s = 100 m/s
 };

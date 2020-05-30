@@ -18,28 +18,38 @@ public:
 	// Sets default values for this component's properties
 	UTankAimingComponent();
 
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
+
 
 private:
+	// Properties
+	/** Reference to the barrel component of the owning tank. */
 	UPROPERTY()
 		UTankBarrelComponent* BarrelRef = nullptr;
 
+	/** Reference to the turret component of the owning tank. */
 	UPROPERTY()
 		UTankTurretComponent* TurretRef = nullptr;
 
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+protected:
+	// ~ Begin UActorComponent Interface
+	virtual void BeginPlay() override;
 
+public:	
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	// ~ End UActorComponent Interface
+
+	// Functions
 	/**
 	 * Tell the component to make the tank aim at a location.
 	 * @param Location The location at which the tank should aim
-	 * @param InitialProjectileVelocity The initial velocity at which a projectile is fired
+	 * @param InitialProjectileSpeed The initial speed at which a projectile is fired
 	 */
-	virtual void AimAt(FVector Location, float InitialProjectileVelocity);
+	virtual void AimAt(FVector Location, float InitialProjectileSpeed);
 
+	/**
+	 * Tell the component to move the barrel and the turret in order to aim towards a direction.
+	 * @param AimDirection The direction to aim at
+	 */
 	virtual void MoveToAimTowards(FVector AimDirection);
 
 	// Getters/setters

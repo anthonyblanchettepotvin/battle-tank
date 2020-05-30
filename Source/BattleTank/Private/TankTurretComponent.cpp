@@ -5,7 +5,7 @@
 
 void UTankTurretComponent::Rotate(FVector AimDirection)
 {
-	FVector CurrDirection = GetRelativeRotation().Vector();
+	FVector CurrDirection = GetComponentRotation().Vector();
 
 	DrawDebugDirectionalArrow(GetWorld(), GetComponentLocation(), GetComponentLocation() + (CurrDirection * 1000.0f), 20.0f, FColor::Blue, false, -1.0f, 0, 10.0f);
 
@@ -18,6 +18,8 @@ void UTankTurretComponent::Rotate(FVector AimDirection)
 	float RotationChange = FMath::Abs(GetAngularSpeed(DeltaRotation.Yaw) * GetWorld()->DeltaTimeSeconds);
 
 	// Check if the turret is on the right or left side of aiming direction
+	// FIXME: The way I do it, it makes the turret wiggle from left to right when it's aiming
+	// in the good direction.
 	FVector RightDirection = GetRightVector();
 	float Rightness = FVector::DotProduct(RightDirection, AimDirection);
 	if (Rightness < 0) {

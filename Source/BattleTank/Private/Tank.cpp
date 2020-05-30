@@ -1,6 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "Engine/World.h"
 #include "TankAimingComponent.h"
+#include "TankBarrelComponent.h"
+#include "Projectile.h"
 #include "Tank.h"
 
 // Sets default values
@@ -32,17 +35,24 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ATank::Fire()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Tank firing!"))
+	if (!Barrel || !Projectile) { return; }
+
+	AProjectile* NewProjectile = GetWorld()->SpawnActor<AProjectile>(Projectile, Barrel->GetSocketLocation(FName("Muzzle")), Barrel->GetSocketRotation(FName("Muzzle")));
+	NewProjectile->Launch(InitialProjectileSpeed);
 }
 
 void ATank::AimAt(FVector Location)
 {
-	AimingComponent->AimAt(Location, InitialProjectileVelocity);
+	if (!AimingComponent) { return; }
+
+	AimingComponent->AimAt(Location, InitialProjectileSpeed);
 }
 
 void ATank::SetBarrelComponentReference(UTankBarrelComponent* Value)
 {
 	AimingComponent->SetBarrelComponentReference(Value);
+
+	Barrel = Value;
 }
 
 void ATank::SetTurretComponentReference(UTankTurretComponent* Value)

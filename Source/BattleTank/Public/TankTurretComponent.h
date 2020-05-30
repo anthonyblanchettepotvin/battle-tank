@@ -14,10 +14,16 @@ class BATTLETANK_API UTankTurretComponent : public UStaticMeshComponent
 {
 	GENERATED_BODY()
 
+protected:
+	// Properties
+	/** The maximum degrees per second the turret can rotate. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret")
+		float MaxDegreesPerSecond = 30.0f;
+
 public:
+	// Functions
 	/**
 	 * Returns the speed in degrees per second based on the relative speed.
-	 *
 	 * @param RelativeSpeed The relative speed [-1..1] at which the turret should move
 	 * @return The speed in degrees per second
 	 * @note The relative speed is clamped to [-1..1]
@@ -34,8 +40,4 @@ public:
 	 * @note The relative speed is clamped to [-1..1]
 	 */
 	void Rotate(FVector AimDirection);
-
-protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret")
-		float MaxDegreesPerSecond = 30.0f;
 };

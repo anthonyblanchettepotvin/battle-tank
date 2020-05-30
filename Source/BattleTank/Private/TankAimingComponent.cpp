@@ -21,7 +21,7 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-void UTankAimingComponent::AimAt(FVector Location, float InitialProjectileVelocity)
+void UTankAimingComponent::AimAt(FVector Location, float InitialProjectileSpeed)
 {
 	if (!BarrelRef || !TurretRef) { return; }
 	
@@ -36,7 +36,7 @@ void UTankAimingComponent::AimAt(FVector Location, float InitialProjectileVeloci
 		LaunchVelocity,
 		StartLocation,
 		Location,
-		InitialProjectileVelocity,
+		InitialProjectileSpeed,
 		false,
 		0.0f,
 		0.0f,
