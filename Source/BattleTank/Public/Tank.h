@@ -7,6 +7,7 @@
 #include "Tank.generated.h"
 
 class UTankAimingComponent;
+class UTankMovementComponent;
 class UTankBarrelComponent;
 class UTankTurretComponent;
 class AProjectile;
@@ -25,6 +26,9 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Tank, meta = (AllowPrivateAccess = true))
 		UTankAimingComponent* AimingComponent = nullptr;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Tank, meta = (AllowPrivateAccess = true))
+		UTankMovementComponent* MovementComponent = nullptr;
+
 protected:
 	// Properties
 	/** The projectile to be fired by the tank. */
@@ -42,8 +46,9 @@ protected:
 	/** The last time, in seconds since the beginning of the game, that the tank fired a projectile. */
 	double LastFireTime = 0.0;
 
-	/** Reference to the barrel component of the tank. */
-	UTankBarrelComponent* Barrel = nullptr;
+	/** Reference to the TankBarrelComponent of the tank. */
+	UPROPERTY()
+		UTankBarrelComponent* BarrelRef = nullptr;
 
 	// Functions
 	// ~ Begin APawn Interface

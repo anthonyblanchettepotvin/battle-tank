@@ -3,6 +3,7 @@
 #include "Engine/World.h"
 #include "TankAimingComponent.h"
 #include "TankBarrelComponent.h"
+#include "TankMovementComponent.h"
 #include "Projectile.h"
 #include "Tank.h"
 
@@ -11,6 +12,7 @@ ATank::ATank()
 	PrimaryActorTick.bCanEverTick = false;
 
 	AimingComponent = CreateDefaultSubobject<UTankAimingComponent>(FName("AimingComponent"));
+	MovementComponent = CreateDefaultSubobject<UTankMovementComponent>(FName("MovementComponent"));
 }
 
 void ATank::BeginPlay()
@@ -30,9 +32,14 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ATank::Fire()
 {
-	if (!Barrel || !Projectile || !IsReloaded()) { return; }
+	if (!BarrelRef || !Projectile || !IsReloaded()) { return; }
 
-	AProjectile* NewProjectile = GetWorld()->SpawnActor<AProjectile>(Projectile, Barrel->GetSocketLocation(FName("Muzzle")), Barrel->GetSocketRotation(FName("Muzzle")));
+	AProjectile* NewProjectile = GetWorld()->SpawnActor<AProjectile>(
+		Projectile,
+		BarrelRef->GetSocketLocation(FName("Muzzle")),
+		BarrelRef->GetSocketRotation(FName("Muzzle"))
+	);
+
 	NewProjectile->Launch(InitialProjectileSpeed);
 
 	LastFireTime = FPlatformTime::Seconds();
@@ -49,7 +56,7 @@ void ATank::SetBarrelComponentReference(UTankBarrelComponent* Value)
 {
 	AimingComponent->SetBarrelComponentReference(Value);
 
-	Barrel = Value;
+	BarrelRef = Value;
 }
 
 void ATank::SetTurretComponentReference(UTankTurretComponent* Value)
