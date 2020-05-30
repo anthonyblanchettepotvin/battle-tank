@@ -41,6 +41,9 @@ public:
 	 */
 	virtual void AimAt(FVector Location);
 
+	UFUNCTION(BlueprintCallable, Category = Tank)
+		virtual void Fire();
+
 	// Setters/getters
 	UFUNCTION(BlueprintCallable, Category = Tank)
 		void SetBarrelComponentReference(UTankBarrelComponent* Value);

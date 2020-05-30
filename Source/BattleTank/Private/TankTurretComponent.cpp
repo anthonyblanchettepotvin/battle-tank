@@ -3,13 +3,6 @@
 #include "TankTurretComponent.h"
 #include "DrawDebugHelpers.h"
 
-float UTankTurretComponent::GetAngularSpeed(float RelativeSpeed)
-{
-	float ClampedRelativeSpeed = FMath::Clamp<float>(RelativeSpeed, -1.0f, 1.0f);
-
-	return ClampedRelativeSpeed * MaxDegreesPerSecond;
-}
-
 void UTankTurretComponent::Rotate(FVector AimDirection)
 {
 	FVector CurrDirection = GetRelativeRotation().Vector();
@@ -38,4 +31,11 @@ void UTankTurretComponent::Rotate(FVector AimDirection)
 	FRotator NewRotation = { 0.0f, NewYaw, 0.0f };
 
 	SetRelativeRotation(NewRotation);
+}
+
+float UTankTurretComponent::GetAngularSpeed(float RelativeSpeed)
+{
+	float ClampedRelativeSpeed = FMath::Clamp<float>(RelativeSpeed, -1.0f, 1.0f);
+
+	return ClampedRelativeSpeed * MaxDegreesPerSecond;
 }
