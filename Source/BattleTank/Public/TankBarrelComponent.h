@@ -33,7 +33,7 @@ public:
 	 * @param RelativeSpeed The relative speed [-1..1] at which the barrel should move
 	 * @note The relative speed is clamped to [-1..1]
 	 */
-	void Elevate(float RelativeSpeed);
+	void Elevate(FVector AimDirection);
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Barrel")

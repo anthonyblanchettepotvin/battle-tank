@@ -1,5 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "TankBarrelComponent.h"
 #include "TankTurretComponent.h"
@@ -49,7 +50,9 @@ void UTankAimingComponent::AimAt(FVector Location, float InitialProjectileVeloci
 	{
 		FVector AimDirection = LaunchVelocity.GetSafeNormal();
 
-		UE_LOG(LogTemp, Warning, TEXT("%s - AimAt - Aim direction found = %s"), *GetOwner()->GetName(), *AimDirection.ToString());
+		DrawDebugDirectionalArrow(GetWorld(), StartLocation, StartLocation + (AimDirection * 1000.0f), 20.0f, FColor::Red, false, -1.0f, 0, 10.0f);
+
+		//UE_LOG(LogTemp, Warning, TEXT("%s - AimAt - Aim direction found = %s"), *GetOwner()->GetName(), *AimDirection.ToString());
 
 		MoveToAimTowards(AimDirection);
 	}
@@ -65,8 +68,8 @@ void UTankAimingComponent::MoveToAimTowards(FVector AimDirection)
 	auto AimRotation = AimDirection.Rotation();
 	auto DeltaRotation = AimRotation - BarrelRotation;
 
-	BarrelRef->Elevate(DeltaRotation.Pitch);
-	TurretRef->Rotate(DeltaRotation.Yaw);
+	BarrelRef->Elevate(AimDirection);
+	TurretRef->Rotate(AimDirection);
 }
 
 void UTankAimingComponent::SetBarrelComponentReference(UTankBarrelComponent* Value)

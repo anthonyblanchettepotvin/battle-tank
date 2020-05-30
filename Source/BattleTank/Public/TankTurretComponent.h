@@ -33,9 +33,9 @@ public:
 	 * @param RelativeSpeed The relative speed [-1..1] at which the turret should rotate
 	 * @note The relative speed is clamped to [-1..1]
 	 */
-	void Rotate(float RelativeSpeed);
+	void Rotate(FVector AimDirection);
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret")
-		float MaxDegreesPerSecond = 10.0f;
+		float MaxDegreesPerSecond = 30.0f;
 };
