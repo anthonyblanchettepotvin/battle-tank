@@ -17,15 +17,15 @@ class BATTLETANK_API UTankBarrelComponent : public UStaticMeshComponent
 protected:
 	// Properties
 	/** The minimum elevation in degrees that the barrel can elevate. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Barrel")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Barrel)
 		float MinElevationDegrees = 0.0f;
 
 	/** The maximum elevation in degrees that the barrel can elevate. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Barrel")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Barrel)
 		float MaxElevationDegrees = 30.0f;
 
 	/** The maximum degrees per second the barrel can elevate. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Barrel")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Barrel)
 		float MaxDegreesPerSecond = 10.0f;
 
 public:

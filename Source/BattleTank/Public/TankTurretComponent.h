@@ -17,7 +17,7 @@ class BATTLETANK_API UTankTurretComponent : public UStaticMeshComponent
 protected:
 	// Properties
 	/** The maximum degrees per second the turret can rotate. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Turret)
 		float MaxDegreesPerSecond = 30.0f;
 
 public:

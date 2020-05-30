@@ -14,11 +14,9 @@ class BATTLETANK_API UTankAimingComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
-	// Sets default values for this component's properties
+public:
+	/** Default constructor for UTankAimingComponent. */
 	UTankAimingComponent();
-
-
 
 private:
 	// Properties

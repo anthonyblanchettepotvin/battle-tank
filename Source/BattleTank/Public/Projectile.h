@@ -14,7 +14,7 @@ class BATTLETANK_API AProjectile : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
+	/** Default constructor for AProjectile. */
 	AProjectile();
 
 private:
@@ -22,6 +22,7 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Projectile, meta = (AllowPrivateAccess = true))
 		UProjectileMovementComponent* ProjectileMovement = nullptr;
 
+	// Functions
 	// ~ Start AActor Interface
 protected:
 	virtual void BeginPlay() override;
@@ -30,7 +31,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	// ~ End AActor Interface
 
-	// Functions
 	/**
 	 * Launch the projectile.
 	 * @param Speed The initial speed of the projectile at launch

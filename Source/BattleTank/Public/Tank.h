@@ -28,16 +28,24 @@ private:
 protected:
 	// Properties
 	/** The projectile to be fired by the tank. */
-	UPROPERTY(EditAnywhere, Category = "Tank|Firing")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Tank|Firing")
 		TSubclassOf<AProjectile> Projectile = nullptr;
 
 	/** The initial speed of the projectile being fired by the tank. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tank|Firing")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Tank|Firing")
 		float InitialProjectileSpeed = 10000;
+
+	/** The time is takes in seconds for the tank to load a projectile. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Tank|Firing")
+		float ReloadSpeed = 3.0f;
+
+	/** The last time, in seconds since the beginning of the game, that the tank fired a projectile. */
+	double LastFireTime = 0.0;
 
 	/** Reference to the barrel component of the tank. */
 	UTankBarrelComponent* Barrel = nullptr;
 
+	// Functions
 	// ~ Begin APawn Interface
 	virtual void BeginPlay() override;
 
@@ -64,4 +72,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = Tank)
 		void SetTurretComponentReference(UTankTurretComponent* value);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Tank)
+		bool IsReloaded() const;
 };

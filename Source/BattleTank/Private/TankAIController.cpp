@@ -23,44 +23,29 @@
 		*Message) \
 }
 
-//ATankAIController::ATankAIController()
-//{
-//	PrimaryActorTick.bCanEverTick = true;
-//}
+ATankAIController::ATankAIController()
+{
+	PrimaryActorTick.bCanEverTick = true;
+}
 
 void ATankAIController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	auto ControlledTank = GetControlledTank();
-	if (ControlledTank)
-	{
-		QUICK_LOG_WARN("GetControlledTank = %s", *GetControlledTank()->GetName())
-	}
-	else
-	{
-		QUICK_LOG_ERROR("Possessed pawn is not Tank or null")
-	}
-
-	auto PlayerTank = GetPlayerTank();
-	if (PlayerTank)
-	{
-		QUICK_LOG_WARN("GetPlayerTank = %s", *GetPlayerTank()->GetName())
-	}
-	else
-	{
-		QUICK_LOG_ERROR("Player pawn is not Tank or null")
-	}
 }
 
 void ATankAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (!GetControlledTank() ||
-		!GetPlayerTank()) { return; }
+	ATank* ControlledTank = GetControlledTank();
+	ATank* PlayerTank = GetPlayerTank();
 
-	GetControlledTank()->AimAt(GetPlayerTank()->GetActorLocation());
+	if (!ControlledTank ||
+		!PlayerTank) { return; }
+
+	ControlledTank->AimAt(PlayerTank->GetActorLocation());
+
+	ControlledTank->Fire(); // TODO: Don't fire every frame
 }
 
 ATank* ATankAIController::GetControlledTank() const
