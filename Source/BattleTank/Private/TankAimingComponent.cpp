@@ -1,12 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Kismet/GameplayStatics.h"
-#include "TankAimingComponent.h"
 #include "TankBarrelComponent.h"
+#include "TankTurretComponent.h"
+#include "TankAimingComponent.h"
 
 UTankAimingComponent::UTankAimingComponent()
 {
-	PrimaryComponentTick.bCanEverTick = true;
+	PrimaryComponentTick.bCanEverTick = false;
 }
 
 void UTankAimingComponent::BeginPlay()
@@ -21,10 +22,10 @@ void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 
 void UTankAimingComponent::AimAt(FVector Location, float InitialProjectileVelocity)
 {
-	if (!BarrelComponentReference) { return; }
+	if (!BarrelRef || !TurretRef) { return; }
 	
 	FVector LaunchVelocity = { 0.0f, 0.0f, 0.0f };
-	FVector StartLocation = BarrelComponentReference->GetSocketLocation(FName("Muzzle"));
+	FVector StartLocation = BarrelRef->GetSocketLocation(FName("Muzzle"));
 
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(GetOwner());
@@ -50,7 +51,7 @@ void UTankAimingComponent::AimAt(FVector Location, float InitialProjectileVeloci
 
 		UE_LOG(LogTemp, Warning, TEXT("%s - AimAt - Aim direction found = %s"), *GetOwner()->GetName(), *AimDirection.ToString());
 
-		MoveBarrelTowards(AimDirection);
+		MoveToAimTowards(AimDirection);
 	}
 	else
 	{
@@ -58,21 +59,22 @@ void UTankAimingComponent::AimAt(FVector Location, float InitialProjectileVeloci
 	}
 }
 
-void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
+void UTankAimingComponent::MoveToAimTowards(FVector AimDirection)
 {
-	auto BarrelRotation = BarrelComponentReference->GetForwardVector().Rotation();
+	auto BarrelRotation = BarrelRef->GetForwardVector().Rotation();
 	auto AimRotation = AimDirection.Rotation();
 	auto DeltaRotation = AimRotation - BarrelRotation;
 
-	BarrelComponentReference->Elevate(DeltaRotation.Pitch);
+	BarrelRef->Elevate(DeltaRotation.Pitch);
+	TurretRef->Rotate(DeltaRotation.Yaw);
 }
 
 void UTankAimingComponent::SetBarrelComponentReference(UTankBarrelComponent* Value)
 {
-	BarrelComponentReference = Value;
+	BarrelRef = Value;
 }
 
 void UTankAimingComponent::SetTurretComponentReference(UTankTurretComponent* Value)
 {
-	TurretComponentReference = Value;
+	TurretRef = Value;
 }

@@ -23,9 +23,11 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-	UTankBarrelComponent* BarrelComponentReference = nullptr;
+	UPROPERTY()
+		UTankBarrelComponent* BarrelRef = nullptr;
 
-	UTankTurretComponent* TurretComponentReference = nullptr;
+	UPROPERTY()
+		UTankTurretComponent* TurretRef = nullptr;
 
 public:	
 	// Called every frame
@@ -38,7 +40,7 @@ public:
 	 */
 	virtual void AimAt(FVector Location, float InitialProjectileVelocity);
 
-	virtual void MoveBarrelTowards(FVector AimDirection);
+	virtual void MoveToAimTowards(FVector AimDirection);
 
 	// Getters/setters
 	void SetBarrelComponentReference(UTankBarrelComponent* Value);

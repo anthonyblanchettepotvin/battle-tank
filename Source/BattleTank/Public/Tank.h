@@ -8,6 +8,7 @@
 
 class UTankAimingComponent;
 class UTankBarrelComponent;
+class UTankTurretComponent;
 
 UCLASS()
 class BATTLETANK_API ATank : public APawn
@@ -25,7 +26,7 @@ protected:
 private:
 	// Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Tank, meta = (AllowPrivateAccess = true))
-		UTankAimingComponent* TankAimingComponent = nullptr;
+		UTankAimingComponent* AimingComponent = nullptr;
 
 public:	
 	// Called every frame
@@ -43,6 +44,9 @@ public:
 	// Setters/getters
 	UFUNCTION(BlueprintCallable, Category = Tank)
 		void SetBarrelComponentReference(UTankBarrelComponent* Value);
+
+	UFUNCTION(BlueprintCallable, Category = Tank)
+		void SetTurretComponentReference(UTankTurretComponent* value);
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tank | Firing")
