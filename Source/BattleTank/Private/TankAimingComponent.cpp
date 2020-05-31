@@ -11,14 +11,10 @@ UTankAimingComponent::UTankAimingComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
-void UTankAimingComponent::BeginPlay()
+void UTankAimingComponent::Initialize(UTankBarrelComponent* NewBarrel, UTankTurretComponent* NewTurret)
 {
-	Super::BeginPlay();
-}
-
-void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	BarrelRef = NewBarrel;
+	TurretRef = NewTurret;
 }
 
 void UTankAimingComponent::AimAt(FVector Location, float InitialProjectileSpeed)
@@ -58,6 +54,8 @@ void UTankAimingComponent::AimAt(FVector Location, float InitialProjectileSpeed)
 
 void UTankAimingComponent::MoveToAimTowards(FVector AimDirection)
 {
+	if (!BarrelRef || !TurretRef) { return; }
+
 	auto BarrelRotation = BarrelRef->GetForwardVector().Rotation();
 	auto AimRotation = AimDirection.Rotation();
 	auto DeltaRotation = AimRotation - BarrelRotation;
@@ -66,12 +64,12 @@ void UTankAimingComponent::MoveToAimTowards(FVector AimDirection)
 	TurretRef->Rotate(AimDirection);
 }
 
-void UTankAimingComponent::SetBarrelComponentReference(UTankBarrelComponent* Value)
+UTankBarrelComponent* UTankAimingComponent::GetBarrelRef() const
 {
-	BarrelRef = Value;
+	return BarrelRef;
 }
 
-void UTankAimingComponent::SetTurretComponentReference(UTankTurretComponent* Value)
+UTankTurretComponent* UTankAimingComponent::GetTurretRef() const
 {
-	TurretRef = Value;
+	return TurretRef;
 }

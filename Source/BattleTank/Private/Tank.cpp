@@ -32,12 +32,14 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ATank::Fire()
 {
-	if (!BarrelRef || !Projectile || !IsReloaded()) { return; }
+	UTankBarrelComponent* Barrel = AimingComponent->GetBarrelRef();
+
+	if (!Barrel || !Projectile || !IsReloaded()) { return; }
 
 	AProjectile* NewProjectile = GetWorld()->SpawnActor<AProjectile>(
 		Projectile,
-		BarrelRef->GetSocketLocation(FName("Muzzle")),
-		BarrelRef->GetSocketRotation(FName("Muzzle"))
+		Barrel->GetSocketLocation(FName("Muzzle")),
+		Barrel->GetSocketRotation(FName("Muzzle"))
 	);
 
 	NewProjectile->Launch(InitialProjectileSpeed);
@@ -50,18 +52,6 @@ void ATank::AimAt(FVector Location)
 	if (!AimingComponent) { return; }
 
 	AimingComponent->AimAt(Location, InitialProjectileSpeed);
-}
-
-void ATank::SetBarrelComponentReference(UTankBarrelComponent* Value)
-{
-	AimingComponent->SetBarrelComponentReference(Value);
-
-	BarrelRef = Value;
-}
-
-void ATank::SetTurretComponentReference(UTankTurretComponent* Value)
-{
-	AimingComponent->SetTurretComponentReference(Value);
 }
 
 bool ATank::IsReloaded() const

@@ -9,6 +9,14 @@
 class UTankBarrelComponent;
 class UTankTurretComponent;
 
+UENUM()
+enum class ETankAimingState : uint8
+{
+	Reloading,
+	Aiming,
+	Locked
+};
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BATTLETANK_API UTankAimingComponent : public UActorComponent
 {
@@ -21,22 +29,29 @@ public:
 private:
 	// Properties
 	/** Reference to the barrel component of the owning tank. */
-	UPROPERTY()
+	UPROPERTY(BlueprintGetter = GetBarrelRef)
 		UTankBarrelComponent* BarrelRef = nullptr;
 
 	/** Reference to the turret component of the owning tank. */
-	UPROPERTY()
+	UPROPERTY(BlueprintGetter = GetTurretRef)
 		UTankTurretComponent* TurretRef = nullptr;
 
 protected:
-	// ~ Begin UActorComponent Interface
-	virtual void BeginPlay() override;
+	/** Current state of the aiming process for the owning tank. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Aiming)
+		ETankAimingState State = ETankAimingState::Reloading;
 
-public:	
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	// ~ End UActorComponent Interface
+public:
+	/**
+	 * Initialize the aiming component by providing the required component.
+	 * @param NewBarrel The TankBarrelComponent for the barrel of the tank
+	 * @param NewTurret The TankTurretComponent for the turret of the tank
+	 * @see UTankBarrelComponent
+	 * @see UTankTurretComponent
+	 */
+	UFUNCTION(BlueprintCallable, Category = TankMovement)
+		void Initialize(UTankBarrelComponent* NewBarrel, UTankTurretComponent* NewTurret);
 
-	// Functions
 	/**
 	 * Tell the component to make the tank aim at a location.
 	 * @param Location The location at which the tank should aim
@@ -51,7 +66,9 @@ public:
 	virtual void MoveToAimTowards(FVector AimDirection);
 
 	// Getters/setters
-	void SetBarrelComponentReference(UTankBarrelComponent* Value);
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Aiming)
+		UTankBarrelComponent* GetBarrelRef() const;
 
-	void SetTurretComponentReference(UTankTurretComponent* Value);
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Aiming)
+		UTankTurretComponent* GetTurretRef() const;
 };

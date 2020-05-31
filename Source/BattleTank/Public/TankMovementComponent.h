@@ -17,6 +17,9 @@ class BATTLETANK_API UTankMovementComponent : public UNavMovementComponent
 {
 	GENERATED_BODY()
 
+public:
+	UTankMovementComponent();
+
 private:
 	/** Reference to the left track of the tank. */
 	UPROPERTY()
@@ -31,7 +34,7 @@ public:
 	/**
 	 * Initialize the movement component by providing the required component.
 	 * @param NewLeftTrack The TankTrackComponent for the left track of the tank
-	 * @param NewRightTrack The UTankTrackComponent for the right track of the tank
+	 * @param NewRightTrack The TankTrackComponent for the right track of the tank
 	 * @see UTankTrackComponent
 	 */
 	UFUNCTION(BlueprintCallable, Category = TankMovement)

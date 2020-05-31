@@ -19,7 +19,7 @@ class BATTLETANK_API ATankPlayerController : public APlayerController
 protected:
 	// Properties
 	/** Crosshair position in the viewport in percentage. */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = TankPlayerController, meta = (ClampMin = 0, ClampMax = 1))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Controller, meta = (ClampMin = 0, ClampMax = 1))
 		FVector2D CrosshairPosition = { 0.5f, 0.33f };
 
 	// Functions
@@ -43,5 +43,6 @@ private:
 
 public:
 	// Getters/setters
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Controller)
 	ATank* GetControlledTank() const;
 };

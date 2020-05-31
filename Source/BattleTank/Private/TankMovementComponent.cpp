@@ -3,6 +3,11 @@
 #include "TankMovementComponent.h"
 #include "TankTrackComponent.h"
 
+UTankMovementComponent::UTankMovementComponent()
+{
+	PrimaryComponentTick.bCanEverTick = false;
+}
+
 void UTankMovementComponent::Initialize(UTankTrackComponent* NewLeftTrack, UTankTrackComponent* NewRightTrack)
 {
 	LeftTrackRef = NewLeftTrack;

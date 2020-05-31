@@ -72,12 +72,6 @@ public:
 		virtual void Fire();
 
 	// Setters/getters
-	UFUNCTION(BlueprintCallable, Category = Tank)
-		void SetBarrelComponentReference(UTankBarrelComponent* Value);
-
-	UFUNCTION(BlueprintCallable, Category = Tank)
-		void SetTurretComponentReference(UTankTurretComponent* value);
-
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Tank)
 		bool IsReloaded() const;
 };
