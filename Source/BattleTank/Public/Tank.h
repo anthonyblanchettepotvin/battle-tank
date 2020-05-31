@@ -46,10 +46,6 @@ protected:
 	/** The last time, in seconds since the beginning of the game, that the tank fired a projectile. */
 	double LastFireTime = 0.0;
 
-	/** Reference to the TankBarrelComponent of the tank. */
-	UPROPERTY()
-		UTankBarrelComponent* BarrelRef = nullptr;
-
 	// Functions
 	// ~ Begin APawn Interface
 	virtual void BeginPlay() override;

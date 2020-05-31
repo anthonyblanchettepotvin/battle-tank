@@ -39,7 +39,7 @@ private:
 protected:
 	/** Current state of the aiming process for the owning tank. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Aiming)
-		ETankAimingState State = ETankAimingState::Reloading;
+		ETankAimingState State = ETankAimingState::Aiming;
 
 public:
 	/**

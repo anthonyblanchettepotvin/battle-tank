@@ -32,6 +32,8 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ATank::Fire()
 {
+	if (!AimingComponent) { return; }
+
 	UTankBarrelComponent* Barrel = AimingComponent->GetBarrelRef();
 
 	if (!Barrel || !Projectile || !IsReloaded()) { return; }
