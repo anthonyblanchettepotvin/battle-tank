@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright © 2020 Anthony Blanchette-Potvin All Rights Reserved
 
 #pragma once
 
@@ -30,9 +30,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	// ~ End APlayerController Interface
 
-	// Getters/setters
-	ATank* GetControlledTank() const;
-
 private:
 	/** Aim the tank's barrel at the location where the player's crosshair intersects the world. */
 	void AimTowardsCrosshair();
@@ -43,4 +40,8 @@ private:
 	 * @return TRUE if the player's crosshair is aiming at something, FALSE otherwise
 	 */
 	bool GetCrosshairAimLocation(FVector& OutAimLocation) const;
+
+public:
+	// Getters/setters
+	ATank* GetControlledTank() const;
 };

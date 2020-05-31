@@ -1,11 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright © 2020 Anthony Blanchette-Potvin All Rights Reserved
 
+#include "Tank.h"
 #include "Engine/World.h"
 #include "TankAimingComponent.h"
 #include "TankBarrelComponent.h"
 #include "TankMovementComponent.h"
 #include "Projectile.h"
-#include "Tank.h"
 
 ATank::ATank()
 {

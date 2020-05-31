@@ -1,13 +1,13 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright © 2020 Anthony Blanchette-Potvin All Rights Reserved
 
-#include "DrawDebugHelpers.h"
 #include "TankBarrelComponent.h"
+#include "DrawDebugHelpers.h"
 
 void UTankBarrelComponent::Elevate(FVector AimDirection)
 {
 	FVector CurrDirection = GetSocketRotation(FName("Muzzle")).Vector();
 
-	DrawDebugDirectionalArrow(GetWorld(), GetComponentLocation(), GetComponentLocation() + (CurrDirection * 1000.0f), 20.0f, FColor::Blue, false, -1.0f, 0, 10.0f);
+	DrawDebugDirectionalArrow(GetWorld(), GetComponentLocation(), GetComponentLocation() + (CurrDirection * 1000.0f), 15.0f, FColor::Purple, false, -1.0f, 0, 3.0f);
 
 	// TODO: This code is repeated in UTankTurretRotation
 	FRotator CurrRotation = GetForwardVector().Rotation();

@@ -1,10 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright © 2020 Anthony Blanchette-Potvin All Rights Reserved
 
+#include "TankAimingComponent.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "TankBarrelComponent.h"
 #include "TankTurretComponent.h"
-#include "TankAimingComponent.h"
 
 UTankAimingComponent::UTankAimingComponent()
 {
@@ -50,15 +50,9 @@ void UTankAimingComponent::AimAt(FVector Location, float InitialProjectileSpeed)
 	{
 		FVector AimDirection = LaunchVelocity.GetSafeNormal();
 
-		DrawDebugDirectionalArrow(GetWorld(), StartLocation, StartLocation + (AimDirection * 1000.0f), 20.0f, FColor::Red, false, -1.0f, 0, 10.0f);
-
-		//UE_LOG(LogTemp, Warning, TEXT("%s - AimAt - Aim direction found = %s"), *GetOwner()->GetName(), *AimDirection.ToString());
+		DrawDebugDirectionalArrow(GetWorld(), StartLocation, StartLocation + (AimDirection * 1000.0f), 15.0f, FColor::Red, false, -1.0f, 0, 3.0f);
 
 		MoveToAimTowards(AimDirection);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s - AimAt - Aim direction not found"), *GetOwner()->GetName());
 	}
 }
 

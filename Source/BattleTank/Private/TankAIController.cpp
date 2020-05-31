@@ -1,27 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright © 2020 Anthony Blanchette-Potvin All Rights Reserved
 
+#include "TankAIController.h"
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
 #include "Tank.h"
-#include "TankAIController.h"
-
-#define QUICK_LOG_WARN(Format, ...) \
-{ \
-	FString Message = FString::Printf(TEXT(Format), ##__VA_ARGS__); \
-	UE_LOG(LogTemp, Warning, \
-		TEXT("%s - %s"), \
-		TEXT(__FUNCTION__), \
-		*Message) \
-}
-
-#define QUICK_LOG_ERROR(Format, ...) \
-{ \
-	FString Message = FString::Printf(TEXT(Format), ##__VA_ARGS__); \
-	UE_LOG(LogTemp, Error, \
-		TEXT("%s - %s"), \
-		TEXT(__FUNCTION__), \
-		*Message) \
-}
 
 ATankAIController::ATankAIController()
 {
@@ -43,9 +25,11 @@ void ATankAIController::Tick(float DeltaTime)
 	if (!ControlledTank ||
 		!PlayerTank) { return; }
 
+	MoveToActor(PlayerTank, AcceptanceRadius);
+
 	ControlledTank->AimAt(PlayerTank->GetActorLocation());
 
-	ControlledTank->Fire(); // TODO: Don't fire every frame
+	//ControlledTank->Fire();
 }
 
 ATank* ATankAIController::GetControlledTank() const

@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright © 2020 Anthony Blanchette-Potvin All Rights Reserved
 
 #pragma once
 
@@ -20,8 +20,13 @@ public:
 	/** Default constructor for ATankAIController. */
 	ATankAIController();
 
-	// Functions
 protected:
+	// Properties
+	/** Radius that the AI must be in in order to be considered close enough to it's target. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Controller|Pathfinding")
+		float AcceptanceRadius = 3000.0f;
+
+	// Functions
 	// ~ Start AAIControllerInterface
 	virtual void BeginPlay() override;
 

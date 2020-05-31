@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright © 2020 Anthony Blanchette-Potvin All Rights Reserved
 
 #include "TankTurretComponent.h"
 #include "DrawDebugHelpers.h"
@@ -7,7 +7,7 @@ void UTankTurretComponent::Rotate(FVector AimDirection)
 {
 	FVector CurrDirection = GetComponentRotation().Vector();
 
-	DrawDebugDirectionalArrow(GetWorld(), GetComponentLocation(), GetComponentLocation() + (CurrDirection * 1000.0f), 20.0f, FColor::Blue, false, -1.0f, 0, 10.0f);
+	DrawDebugDirectionalArrow(GetWorld(), GetComponentLocation(), GetComponentLocation() + (CurrDirection * 1000.0f), 15.0f, FColor::Blue, false, -1.0f, 0, 3.0f);
 
 	// TODO: This code is repeated in UTankBarrelRotation
 	FRotator CurrRotation = GetForwardVector().Rotation();

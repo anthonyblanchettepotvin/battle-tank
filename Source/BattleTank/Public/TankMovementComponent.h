@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright © 2020 Anthony Blanchette-Potvin All Rights Reserved
 
 #pragma once
 
@@ -54,4 +54,8 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, Category = TankMovement)
 		void IntendTurnRight(float Force);
+
+	// ~ Start UNavMovementComponent Interface
+	virtual void RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed) override;
+	// ~ End UNavMovementComponent Interface
 };

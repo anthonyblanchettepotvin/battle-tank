@@ -1,7 +1,7 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright © 2020 Anthony Blanchette-Potvin All Rights Reserved
 
-#include "TankTrackComponent.h"
 #include "TankMovementComponent.h"
+#include "TankTrackComponent.h"
 
 void UTankMovementComponent::Initialize(UTankTrackComponent* NewLeftTrack, UTankTrackComponent* NewRightTrack)
 {
@@ -27,4 +27,16 @@ void UTankMovementComponent::IntendTurnRight(float Force)
 
 	LeftTrackRef->SetThrottle(ClampedForce);
 	RightTrackRef->SetThrottle(-ClampedForce);
+}
+
+void UTankMovementComponent::RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed)
+{
+	FVector TankDirection = GetOwner()->GetActorForwardVector().GetSafeNormal();
+	FVector MoveDirection = MoveVelocity.GetSafeNormal();
+
+	float FowardForce = FVector::DotProduct(TankDirection, MoveDirection);
+	float RightForce = FVector::CrossProduct(TankDirection, MoveDirection).Z;
+
+	IntendMoveForward(FowardForce);
+	IntendTurnRight(RightForce);
 }
