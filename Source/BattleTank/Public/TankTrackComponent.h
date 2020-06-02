@@ -14,6 +14,9 @@ class BATTLETANK_API UTankTrackComponent : public UStaticMeshComponent
 {
 	GENERATED_BODY()
 
+public:
+	UTankTrackComponent();
+
 protected:
 	// Properties
 	/** Max force in newtons output by the track. */
@@ -23,6 +26,11 @@ protected:
 	float Throttle = 0.0f;
 
 public:
+	// Functions
+	// ~ Start UStaticMeshComponent Interface
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	// ~ End UStaticMeshComponent Interface
+
 	// Getters/setters
 	UFUNCTION(BlueprintCallable, Category = Track)
 		void SetThrottle(float Value);
