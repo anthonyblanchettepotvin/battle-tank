@@ -16,7 +16,7 @@ void UTankMovementComponent::Initialize(UTankTrackComponent* NewLeftTrack, UTank
 
 void UTankMovementComponent::IntendMoveForward(float Force)
 {
-	if (!LeftTrackRef || !RightTrackRef) { return; }
+	if (!ensure(LeftTrackRef && RightTrackRef)) { return; }
 
 	float ClampedForce = FMath::Clamp(Force, -1.0f, 1.0f);
 
@@ -26,7 +26,7 @@ void UTankMovementComponent::IntendMoveForward(float Force)
 
 void UTankMovementComponent::IntendTurnRight(float Force)
 {
-	if (!LeftTrackRef || !RightTrackRef) { return; }
+	if (!ensure(LeftTrackRef && RightTrackRef)) { return; }
 
 	float ClampedForce = FMath::Clamp(Force, -1.0f, 1.0f);
 

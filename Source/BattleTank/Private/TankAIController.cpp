@@ -22,8 +22,7 @@ void ATankAIController::Tick(float DeltaTime)
 	ATank* ControlledTank = GetControlledTank();
 	ATank* PlayerTank = GetPlayerTank();
 
-	if (!ControlledTank ||
-		!PlayerTank) { return; }
+	if (!ensure(ControlledTank && PlayerTank)) { return; }
 
 	MoveToActor(PlayerTank, AcceptanceRadius);
 

@@ -11,7 +11,7 @@ void UTankTrackComponent::SetThrottle(float Value)
 
 	UPrimitiveComponent* TankRoot = Cast<UPrimitiveComponent>(GetOwner()->GetRootComponent());
 
-	if (!TankRoot) { return; }
+	if (!ensure(TankRoot)) { return; }
 
 	TankRoot->AddForceAtLocation(ForceApplied, ForceLocation);
 }

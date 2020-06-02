@@ -32,11 +32,11 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ATank::Fire()
 {
-	if (!AimingComponent) { return; }
-
 	UTankBarrelComponent* Barrel = AimingComponent->GetBarrelRef();
 
-	if (!Barrel || !Projectile || !IsReloaded()) { return; }
+	if (!ensure(AimingComponent && Projectile && Barrel)) { return; }
+
+	if (!IsReloaded()) { return; }
 
 	AProjectile* NewProjectile = GetWorld()->SpawnActor<AProjectile>(
 		Projectile,
@@ -51,7 +51,7 @@ void ATank::Fire()
 
 void ATank::AimAt(FVector Location)
 {
-	if (!AimingComponent) { return; }
+	if (!ensure(AimingComponent)) { return; }
 
 	AimingComponent->AimAt(Location, InitialProjectileSpeed);
 }
