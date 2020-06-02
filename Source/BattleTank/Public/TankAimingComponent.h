@@ -6,9 +6,13 @@
 #include "Components/ActorComponent.h"
 #include "TankAimingComponent.generated.h"
 
+class AProjectile;
 class UTankBarrelComponent;
 class UTankTurretComponent;
 
+/**
+ * Enum indicating different state of the TankAimingComponent.
+ */
 UENUM()
 enum class ETankAimingState : uint8
 {
@@ -17,6 +21,10 @@ enum class ETankAimingState : uint8
 	Locked
 };
 
+/** 
+ * TankAimingComponent handles the aiming and firing of a Tank pawn.
+ * @see ATank
+ */
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BATTLETANK_API UTankAimingComponent : public UActorComponent
 {
@@ -28,22 +36,33 @@ public:
 
 private:
 	// Properties
-	/** Reference to the barrel component of the owning tank. */
+	/** Reference to the TankBarrelComponent of the owning Tank. */
 	UPROPERTY(BlueprintGetter = GetBarrelRef)
 		UTankBarrelComponent* BarrelRef = nullptr;
 
-	/** Reference to the turret component of the owning tank. */
+	/** Reference to the TankTurretComponent of the owning Tank. */
 	UPROPERTY(BlueprintGetter = GetTurretRef)
 		UTankTurretComponent* TurretRef = nullptr;
 
 protected:
-	/** Current state of the aiming process for the owning tank. */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Aiming)
+	/** Current state of the aiming process for the owning Tank. */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "TankAimingComponent|Aiming")
 		ETankAimingState State = ETankAimingState::Aiming;
 
-	/** The initial speed of the projectile being fired by the owning tank. */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Aiming)
+	/** The Projectile to be fired by the owning Tank. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "TankAimingComponent|Firing")
+		TSubclassOf<AProjectile> Projectile = nullptr;
+
+	/** The initial speed of the projectile being fired by the owning Tank. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "TankAimingComponent|Firing")
 		float InitialProjectileSpeed = 10000;
+
+	/** The time is takes in seconds for the tank to load a projectile. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "TankAimingComponent|Firing")
+		float ReloadSpeed = 3.0f;
+
+	/** The last time, in seconds since the beginning of the game, that the owning tank fired a projectile. */
+	double LastFireTime = 0.0;
 
 public:
 	/**
@@ -53,7 +72,7 @@ public:
 	 * @see UTankBarrelComponent
 	 * @see UTankTurretComponent
 	 */
-	UFUNCTION(BlueprintCallable, Category = TankMovement)
+	UFUNCTION(BlueprintCallable, Category = TankAimingComponent)
 		void Initialize(UTankBarrelComponent* NewBarrel, UTankTurretComponent* NewTurret);
 
 	/**
@@ -69,10 +88,20 @@ public:
 	 */
 	virtual void MoveToAimTowards(FVector AimDirection);
 
+	/** Tell the component to fire a projectile. */
+	UFUNCTION(BlueprintCallable, Category = "TankAimingComponent|Firing")
+		virtual void Fire();
+
 	// Getters/setters
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Aiming)
+	/** Whether or not the projectile is reloaded. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "TankAimingComponent|Firing")
+		bool IsReloaded() const;
+
+	/** Getter for BarrelRef */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = TankAimingComponent)
 		UTankBarrelComponent* GetBarrelRef() const;
 
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Aiming)
+	/** Getter for TurretRef */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = TankAimingComponent)
 		UTankTurretComponent* GetTurretRef() const;
 };
