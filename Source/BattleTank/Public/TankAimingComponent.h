@@ -64,7 +64,17 @@ protected:
 	/** The last time, in seconds since the beginning of the game, that the owning tank fired a projectile. */
 	double LastFireTime = 0.0;
 
+	/** The aim direction based on the player's aim location and the suggested projectile velocity. */
+	FVector AimDirection = { 0.0f, 0.0f, 0.0f };
+
+	// Functions
+	// ~ Start UActorComponent Interface
+	virtual void BeginPlay() override;
+
 public:
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	// ~ End UActorComponent Interface
+
 	/**
 	 * Initialize the aiming component by providing the required component.
 	 * @param NewBarrel The TankBarrelComponent for the barrel of the tank
@@ -86,16 +96,20 @@ public:
 	 * Tell the component to move the barrel and the turret in order to aim towards a direction.
 	 * @param AimDirection The direction to aim at
 	 */
-	virtual void MoveToAimTowards(FVector AimDirection);
+	virtual void MoveToAimTowards(FVector TargetDirection);
 
 	/** Tell the component to fire a projectile. */
 	UFUNCTION(BlueprintCallable, Category = "TankAimingComponent|Firing")
 		virtual void Fire();
 
 	// Getters/setters
-	/** Whether or not the projectile is reloaded. */
+	/** Whether or not the projectile is reloading. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "TankAimingComponent|Firing")
-		bool IsReloaded() const;
+		bool IsReloading() const;
+
+	/** Whether or not the barrel is in the process of aiming in the AimDirection. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "TankAimingComponent|Aiming")
+		bool IsAiming() const;
 
 	/** Getter for BarrelRef */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = TankAimingComponent)

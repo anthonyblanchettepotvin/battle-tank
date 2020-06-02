@@ -22,7 +22,8 @@ void UTankTurretComponent::Rotate(FVector AimDirection)
 	// in the good direction.
 	FVector RightDirection = GetRightVector();
 	float Rightness = FVector::DotProduct(RightDirection, AimDirection);
-	if (Rightness < 0) {
+	if (Rightness < 0)
+	{
 		// Turn anticlockwise
 		RotationChange *= -1;
 	}
