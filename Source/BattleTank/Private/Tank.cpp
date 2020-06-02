@@ -49,13 +49,6 @@ void ATank::Fire()
 	LastFireTime = FPlatformTime::Seconds();
 }
 
-void ATank::AimAt(FVector Location)
-{
-	if (!ensure(AimingComponent)) { return; }
-
-	AimingComponent->AimAt(Location, InitialProjectileSpeed);
-}
-
 bool ATank::IsReloaded() const
 {
 	return (FPlatformTime::Seconds() - LastFireTime) > ReloadSpeed;

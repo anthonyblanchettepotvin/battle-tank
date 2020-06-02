@@ -3,36 +3,36 @@
 #include "TankPlayerController.h"
 #include "DrawDebugHelpers.h"
 #include "Engine/World.h"
-#include "Tank.h"
+#include "TankAimingComponent.h"
 
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (ensure(GetPawn()))
+	{
+		AimingComponentRef = GetPawn()->FindComponentByClass<UTankAimingComponent>();
+	}
+
+	AfterBeginPlay();
 }
 
 void ATankPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (!ensure(GetControlledTank())) { return; }
-
 	AimTowardsCrosshair();
-}
-
-ATank* ATankPlayerController::GetControlledTank() const
-{
-	return Cast<ATank>(GetPawn());
 }
 
 void ATankPlayerController::AimTowardsCrosshair()
 {
-	if (!ensure(GetControlledTank())) { return; }
+	if (!ensure(AimingComponentRef)) { return; }
 	
 	FVector AimLocation;
 
 	if (GetCrosshairAimLocation(AimLocation))
 	{
-		GetControlledTank()->AimAt(AimLocation);
+		AimingComponentRef->AimAt(AimLocation);
 	}
 }
 
@@ -46,7 +46,7 @@ bool ATankPlayerController::GetCrosshairAimLocation(FVector& OutAimLocation) con
 	FHitResult Hit;
 
 	FCollisionQueryParams Params;
-	Params.AddIgnoredActor(GetControlledTank());
+	Params.AddIgnoredActor(GetPawn());
 	Params.bTraceComplex = true;
 
 	bHit = GetHitResultAtScreenPosition(ScreenPosition, ECC_Visibility, Params, Hit);

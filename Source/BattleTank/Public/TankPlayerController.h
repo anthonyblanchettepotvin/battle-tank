@@ -7,6 +7,7 @@
 #include "TankPlayerController.generated.h"
 
 class ATank;
+class UTankAimingComponent;
 
 /**
  * TankPlayerController is the base player controller for a Tank pawn.
@@ -22,6 +23,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Controller, meta = (ClampMin = 0, ClampMax = 1))
 		FVector2D CrosshairPosition = { 0.5f, 0.33f };
 
+	/** Reference to the TankAimingComponent on the possessed pawn. */
+	UPROPERTY(BlueprintReadOnly)
+		UTankAimingComponent* AimingComponentRef = nullptr;
+
 	// Functions
 	// ~ Begin APlayerController Interface
 	virtual void BeginPlay() override;
@@ -29,6 +34,9 @@ protected:
 public:
 	virtual void Tick(float DeltaTime) override;
 	// ~ End APlayerController Interface
+
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = Controller)
+		void AfterBeginPlay();
 
 private:
 	/** Aim the tank's barrel at the location where the player's crosshair intersects the world. */
@@ -40,9 +48,4 @@ private:
 	 * @return TRUE if the player's crosshair is aiming at something, FALSE otherwise
 	 */
 	bool GetCrosshairAimLocation(FVector& OutAimLocation) const;
-
-public:
-	// Getters/setters
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = Controller)
-	ATank* GetControlledTank() const;
 };

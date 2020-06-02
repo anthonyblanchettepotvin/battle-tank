@@ -7,6 +7,7 @@
 #include "TankAIController.generated.h"
 
 class ATank;
+class UTankAimingComponent;
 
 /**
  * TankPlayerController is the base AI controller for a Tank pawn.
@@ -26,6 +27,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Controller|Pathfinding")
 		float AcceptanceRadius = 3000.0f;
 
+	/** Reference to the TankAimingComponent on the possessed pawn. */
+	UPROPERTY(BlueprintReadOnly)
+		UTankAimingComponent* AimingComponentRef = nullptr;
+
 	// Functions
 	// ~ Start AAIControllerInterface
 	virtual void BeginPlay() override;
@@ -33,9 +38,4 @@ protected:
 public:
 	virtual void Tick(float DeltaTime) override;
 	// ~ End AAIControllerInterface
-
-	// Getters/setters
-	ATank* GetControlledTank() const;
-
-	ATank* GetPlayerTank() const;
 };

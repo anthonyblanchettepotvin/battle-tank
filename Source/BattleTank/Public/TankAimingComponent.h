@@ -41,6 +41,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Aiming)
 		ETankAimingState State = ETankAimingState::Aiming;
 
+	/** The initial speed of the projectile being fired by the owning tank. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Aiming)
+		float InitialProjectileSpeed = 10000;
+
 public:
 	/**
 	 * Initialize the aiming component by providing the required component.
@@ -57,7 +61,7 @@ public:
 	 * @param Location The location at which the tank should aim
 	 * @param InitialProjectileSpeed The initial speed at which a projectile is fired
 	 */
-	virtual void AimAt(FVector Location, float InitialProjectileSpeed);
+	virtual void AimAt(FVector Location);
 
 	/**
 	 * Tell the component to move the barrel and the turret in order to aim towards a direction.
