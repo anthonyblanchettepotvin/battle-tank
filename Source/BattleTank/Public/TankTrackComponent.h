@@ -25,13 +25,40 @@ protected:
 
 	float Throttle = 0.0f;
 
-public:
 	// Functions
 	// ~ Start UStaticMeshComponent Interface
+	virtual void BeginPlay() override;
+
+public:
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	// ~ End UStaticMeshComponent Interface
 
 	// Getters/setters
+	/** Setter for Throlle */
 	UFUNCTION(BlueprintCallable, Category = Track)
 		void SetThrottle(float Value);
+
+private:
+	/**
+	 * Apply a force in the forward/backward direction of the track. 
+	 * This simulates the track rolling and pulling/pushing the tank forward/backward. 
+	 * A Throttle of -1 means the track is pushing the tank backward. 
+	 * A Throttle of 1 means the track is pulling the tank forward.
+	 */
+	void ApplyDrivingForce();
+
+	/**
+	 * Apply a force in the opposite direction of the track's velocity. 
+	 * This simulates sideway friction and prevent the tank from drifting.
+	 */
+	void ApplySidewayForce();
+
+protected:
+	// Delegates
+	/**
+	 * Delegate for OnComponentHit.
+	 * @see UPrimitiveComponent
+	 */
+	UFUNCTION()
+		virtual void OnComponentHitDelegate(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 };
