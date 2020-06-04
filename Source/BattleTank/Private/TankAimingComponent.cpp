@@ -16,13 +16,18 @@ void UTankAimingComponent::BeginPlay()
 	Super::BeginPlay();
 
 	LastFireTime = FPlatformTime::Seconds();
+	CurrentNumberOfAmmo = MaxNumberOfAmmo;
 }
 
 void UTankAimingComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (IsReloading())
+	if (IsOutOfAmmo())
+	{
+		State = ETankAimingState::OutOfAmmo;
+	}
+	else if (IsReloading())
 	{
 		State = ETankAimingState::Reloading;
 	}
@@ -99,7 +104,7 @@ void UTankAimingComponent::Fire()
 {
 	if (!ensure(Projectile && BarrelRef)) { return; }
 
-	if (State == ETankAimingState::Reloading) { return; }
+	if (State == ETankAimingState::Reloading || State == ETankAimingState::OutOfAmmo) { return; }
 
 	AProjectile* NewProjectile = GetWorld()->SpawnActor<AProjectile>(
 		Projectile,
@@ -110,6 +115,12 @@ void UTankAimingComponent::Fire()
 	NewProjectile->Launch(InitialProjectileSpeed);
 
 	LastFireTime = FPlatformTime::Seconds();
+	--CurrentNumberOfAmmo;
+}
+
+bool UTankAimingComponent::IsOutOfAmmo() const
+{
+	return CurrentNumberOfAmmo == 0;
 }
 
 bool UTankAimingComponent::IsReloading() const
@@ -127,6 +138,16 @@ bool UTankAimingComponent::IsAiming() const
 ETankAimingState UTankAimingComponent::GetState() const
 {
 	return State;
+}
+
+int32 UTankAimingComponent::GetMaxNumberOfAmmo() const
+{
+	return MaxNumberOfAmmo;
+}
+
+int32 UTankAimingComponent::GetCurrentNumberOfAmmo() const
+{
+	return CurrentNumberOfAmmo;
 }
 
 UTankBarrelComponent* UTankAimingComponent::GetBarrelRef() const

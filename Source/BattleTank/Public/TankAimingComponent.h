@@ -18,7 +18,8 @@ enum class ETankAimingState : uint8
 {
 	Reloading,
 	Aiming,
-	Locked
+	Locked,
+	OutOfAmmo
 };
 
 /** 
@@ -46,7 +47,7 @@ private:
 
 protected:
 	/** Current state of the aiming process for the owning Tank. */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "TankAimingComponent|Aiming")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, BlueprintGetter = GetState, Category = "TankAimingComponent|Aiming")
 		ETankAimingState State = ETankAimingState::Aiming;
 
 	/** The Projectile to be fired by the owning Tank. */
@@ -60,6 +61,12 @@ protected:
 	/** The time is takes in seconds for the tank to load a projectile. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "TankAimingComponent|Firing")
 		float ReloadSpeed = 3.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, BlueprintGetter = GetMaxNumberOfAmmo, Category = "TankAimingComponent|Firing")
+		int32 MaxNumberOfAmmo = 10;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, BlueprintGetter = GetCurrentNumberOfAmmo, Category = "TankAimingComponent|Firing")
+		int32 CurrentNumberOfAmmo = 0;
 
 	/** The last time, in seconds since the beginning of the game, that the owning tank fired a projectile. */
 	double LastFireTime = 0.0;
@@ -103,6 +110,10 @@ public:
 		virtual void Fire();
 
 	// Getters/setters
+	/** Whether or not the tank is out of ammunitions. */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "TankAimingComponent|Firing")
+		bool IsOutOfAmmo() const;
+
 	/** Whether or not the projectile is reloading. */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "TankAimingComponent|Firing")
 		bool IsReloading() const;
@@ -114,6 +125,14 @@ public:
 	/** Getter for State */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "TankAimingComponent|Firing")
 		ETankAimingState GetState() const;
+
+	/** Getter for MaxNumberOfAmmo */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "TankAimingComponent|Firing")
+		int32 GetMaxNumberOfAmmo() const;
+
+	/** Getter for CurrentNumberOfAmmo */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "TankAimingComponent|Firing")
+		int32 GetCurrentNumberOfAmmo() const;
 
 	/** Getter for BarrelRef */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = TankAimingComponent)
