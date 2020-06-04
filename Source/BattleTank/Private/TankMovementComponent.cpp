@@ -42,6 +42,9 @@ void UTankMovementComponent::RequestDirectMove(const FVector& MoveVelocity, bool
 	float ForwardForce = FVector::DotProduct(TankDirection, MoveDirection);
 	float RightForce = FVector::CrossProduct(TankDirection, MoveDirection).Z;
 
+	//UE_LOG(LogTemp, Warning, TEXT("%s - %s - RequestDirectMove - ForwardForce = %f"), *GetOwner()->GetName(), *GetName(), ForwardForce)
+	//UE_LOG(LogTemp, Warning, TEXT("%s - %s - RequestDirectMove - RightForce = %f"), *GetOwner()->GetName(), *GetName(), RightForce)
+
 	IntendMoveForward(ForwardForce);
 	IntendTurnRight(RightForce);
 }
