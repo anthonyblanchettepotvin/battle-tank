@@ -39,5 +39,5 @@ public:
 	 * @param RelativeSpeed The relative speed [-1..1] at which the turret should rotate
 	 * @note The relative speed is clamped to [-1..1]
 	 */
-	void Rotate(FVector AimDirection);
+	void Rotate(float RelativeSpeed);
 };

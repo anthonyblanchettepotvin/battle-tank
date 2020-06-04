@@ -1,26 +1,16 @@
 // Copyright © 2020 Anthony Blanchette-Potvin All Rights Reserved
 
 #include "TankBarrelComponent.h"
-#include "DrawDebugHelpers.h"
 
-void UTankBarrelComponent::Elevate(FVector AimDirection)
+void UTankBarrelComponent::Elevate(float RelativeSpeed)
 {
-	FVector CurrDirection = GetSocketRotation(FName("Muzzle")).Vector();
+	float PitchChange = GetAngularSpeed(RelativeSpeed) * GetWorld()->DeltaTimeSeconds;
 
-	DrawDebugDirectionalArrow(GetWorld(), GetComponentLocation(), GetComponentLocation() + (CurrDirection * 1000.0f), 15.0f, FColor::Purple, false, -1.0f, 0, 3.0f);
+	float CurrentPitch = GetRelativeRotation().Pitch;
+	float NewPitch = CurrentPitch + PitchChange;
+	NewPitch = FMath::Clamp<float>(NewPitch, MinElevationDegrees, MaxElevationDegrees);
 
-	// TODO: This code is repeated in UTankTurretRotation
-	FRotator CurrRotation = GetForwardVector().Rotation();
-	FRotator AimRotation = AimDirection.Rotation();
-	FRotator DeltaRotation = AimRotation - CurrRotation;
-	
-	float ElevationChange = GetAngularSpeed(DeltaRotation.Pitch) * GetWorld()->DeltaTimeSeconds;
-
-	float CurrentElevation = GetRelativeRotation().Pitch;
-	float NewElevation = CurrentElevation + ElevationChange;
-	NewElevation = FMath::Clamp<float>(NewElevation, MinElevationDegrees, MaxElevationDegrees);
-
-	FRotator NewRotation = { NewElevation, 0.0f, 0.0f };
+	FRotator NewRotation = { NewPitch, 0.0f, 0.0f };
 
 	SetRelativeRotation(NewRotation);
 }

@@ -1,7 +1,6 @@
 // Copyright © 2020 Anthony Blanchette-Potvin All Rights Reserved
 
 #include "TankAimingComponent.h"
-#include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "Projectile.h"
 #include "TankBarrelComponent.h"
@@ -72,8 +71,6 @@ void UTankAimingComponent::AimAt(FVector Location)
 	{
 		AimDirection = LaunchVelocity.GetSafeNormal();
 
-		DrawDebugDirectionalArrow(GetWorld(), StartLocation, StartLocation + (AimDirection * 1000.0f), 15.0f, FColor::Red, false, -1.0f, 0, 3.0f);
-
 		MoveToAimTowards(AimDirection);
 	}
 }
@@ -82,12 +79,20 @@ void UTankAimingComponent::MoveToAimTowards(FVector TargetDirection)
 {
 	if (!ensure(BarrelRef && TurretRef)) { return; }
 
-	auto BarrelRotation = BarrelRef->GetForwardVector().Rotation();
+	auto CurrentRotation = BarrelRef->GetForwardVector().Rotation();
 	auto TargetRotation = TargetDirection.Rotation();
-	auto DeltaRotation = TargetRotation - BarrelRotation;
+	auto DeltaRotation = TargetRotation - CurrentRotation;
 
-	BarrelRef->Elevate(TargetDirection);
-	TurretRef->Rotate(TargetDirection);
+	float BarrelRotation = DeltaRotation.Pitch;
+	float TurretRotation = DeltaRotation.Yaw;
+
+	if (FMath::Abs(TurretRotation) > 180.0f)
+	{
+		TurretRotation *= -1;
+	}
+
+	BarrelRef->Elevate(BarrelRotation);
+	TurretRef->Rotate(TurretRotation);
 }
 
 void UTankAimingComponent::Fire()
