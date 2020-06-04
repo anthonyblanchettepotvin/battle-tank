@@ -124,6 +124,11 @@ bool UTankAimingComponent::IsAiming() const
 	return !AimDirection.Equals(BarrelRef->GetForwardVector().GetSafeNormal(), 0.01);
 }
 
+ETankAimingState UTankAimingComponent::GetState() const
+{
+	return State;
+}
+
 UTankBarrelComponent* UTankAimingComponent::GetBarrelRef() const
 {
 	return BarrelRef;

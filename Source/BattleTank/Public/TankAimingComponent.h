@@ -111,6 +111,10 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "TankAimingComponent|Aiming")
 		bool IsAiming() const;
 
+	/** Getter for State */
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "TankAimingComponent|Firing")
+		ETankAimingState GetState() const;
+
 	/** Getter for BarrelRef */
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = TankAimingComponent)
 		UTankBarrelComponent* GetBarrelRef() const;
