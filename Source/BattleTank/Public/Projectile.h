@@ -7,6 +7,8 @@
 #include "Projectile.generated.h"
 
 class UProjectileMovementComponent;
+class UStaticMeshComponent;
+class UParticleSystemComponent;
 
 UCLASS()
 class BATTLETANK_API AProjectile : public AActor
@@ -21,6 +23,12 @@ private:
 	// Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Projectile, meta = (AllowPrivateAccess = true))
 		UProjectileMovementComponent* ProjectileMovement = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Projectile, meta = (AllowPrivateAccess = true))
+		UStaticMeshComponent* CollisionMesh = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Projectile, meta = (AllowPrivateAccess = true))
+		UParticleSystemComponent* LaunchBlast = nullptr;
 
 	// Functions
 	// ~ Start AActor Interface
