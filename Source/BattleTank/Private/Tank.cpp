@@ -4,6 +4,7 @@
 #include "Engine/World.h"
 #include "TankAimingComponent.h"
 #include "TankMovementComponent.h"
+#include "HealthComponent.h"
 
 ATank::ATank()
 {
@@ -11,16 +12,23 @@ ATank::ATank()
 
 	AimingComponent = CreateDefaultSubobject<UTankAimingComponent>(FName("AimingComponent"));
 	MovementComponent = CreateDefaultSubobject<UTankMovementComponent>(FName("MovementComponent"));
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(FName("HealthComponent"));
+
+	HealthComponent->OnDeath.AddUniqueDynamic(this, &ATank::HandleOnDeath);
 }
 
 float ATank::GetHealthPercentage() const
 {
-	return CurrentHealth / MaxHealth;
+	if (!ensure(HealthComponent)) { return 0.0f; }
+
+	return HealthComponent->GetHealthPercentage();
 }
 
 void ATank::BeginPlay()
 {
 	Super::BeginPlay();
+
+	CurrentHealth = MaxHealth;
 }
 
 void ATank::Tick(float DeltaTime)
@@ -35,16 +43,15 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 float ATank::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	float DamageApplied = FMath::Clamp<float>(DamageAmount, 0.0f, CurrentHealth);
-	CurrentHealth -= DamageApplied;
+	if (!ensure(HealthComponent)) { return 0.0f; }
 
-	if (CurrentHealth <= 0.0f)
+	return HealthComponent->ApplyDamage(DamageAmount);
+}
+
+void ATank::HandleOnDeath()
+{
+	if (OnDeath.IsBound())
 	{
-		if (OnDeath.IsBound())
-		{
-			OnDeath.Broadcast();
-		}
+		OnDeath.Broadcast();
 	}
-
-	return DamageApplied;
 }

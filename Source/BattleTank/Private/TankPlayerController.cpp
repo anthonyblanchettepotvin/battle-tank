@@ -41,6 +41,9 @@ void ATankPlayerController::Tick(float DeltaTime)
 void ATankPlayerController::HandleOnDeath()
 {
 	UE_LOG(LogTemp, Warning, TEXT("%s - HandleOnDeath - Tank died"), *GetName());
+
+	DetachFromPawn();
+	StartSpectatingOnly();
 }
 
 void ATankPlayerController::AimTowardsCrosshair()

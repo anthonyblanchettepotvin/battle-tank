@@ -8,9 +8,10 @@
 
 class UTankAimingComponent;
 class UTankMovementComponent;
+class UHealthComponent;
 
 // Delegates
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeathSignature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeathSignatureTemp);
 
 UCLASS()
 class BATTLETANK_API ATank : public APawn
@@ -29,6 +30,9 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Tank, meta = (AllowPrivateAccess = true))
 		UTankMovementComponent* MovementComponent = nullptr;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Tank, meta = (AllowPrivateAccess = true))
+		UHealthComponent* HealthComponent = nullptr;
+
 protected:
 	// Properties
 	/** The maximum amount of health of the Tank. */
@@ -37,7 +41,7 @@ protected:
 
 	/** The current amount of health of the Tank. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tank|Health")
-		float CurrentHealth = MaxHealth;
+		float CurrentHealth = 0.0f;
 
 	// Getter/setters
 	/** Getter for HealthPercentage */
@@ -54,8 +58,13 @@ public:
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	// ~ End APawn Interface
 
+private:
+	UFUNCTION()
+		virtual void HandleOnDeath();
+
+public:
 	// Delegates
 	/** Called when the Tank has died. */
 	UPROPERTY(BlueprintAssignable, Category = "Tank|Health")
-		FOnDeathSignature OnDeath;
+		FOnDeathSignatureTemp OnDeath;
 };
