@@ -3,6 +3,7 @@
 #include "TankAIController.h"
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
+#include "Tank.h"
 #include "TankAimingComponent.h"
 
 ATankAIController::ATankAIController()
@@ -17,6 +18,20 @@ void ATankAIController::BeginPlay()
 	if (ensure(GetPawn()))
 	{
 		AimingComponentRef = GetPawn()->FindComponentByClass<UTankAimingComponent>();
+	}
+}
+
+void ATankAIController::SetPawn(APawn* InPawn)
+{
+	Super::SetPawn(InPawn);
+
+	if (InPawn)
+	{
+		ATank* PossessedTank = Cast<ATank>(InPawn);
+		if (PossessedTank)
+		{
+			PossessedTank->OnDeath.AddUniqueDynamic(this, &ATankAIController::HandleOnDeath);
+		}
 	}
 }
 
@@ -37,4 +52,9 @@ void ATankAIController::Tick(float DeltaTime)
 	{
 		AimingComponentRef->Fire();
 	}
+}
+
+void ATankAIController::HandleOnDeath()
+{
+	UE_LOG(LogTemp, Warning, TEXT("%s - HandleOnDeath - Tank died"), *GetName());
 }

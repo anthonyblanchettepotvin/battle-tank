@@ -1,8 +1,8 @@
 // Copyright © 2020 Anthony Blanchette-Potvin All Rights Reserved
 
 #include "TankPlayerController.h"
-#include "DrawDebugHelpers.h"
 #include "Engine/World.h"
+#include "Tank.h"
 #include "TankAimingComponent.h"
 
 void ATankPlayerController::BeginPlay()
@@ -17,11 +17,30 @@ void ATankPlayerController::BeginPlay()
 	AfterBeginPlay();
 }
 
+void ATankPlayerController::SetPawn(APawn* InPawn)
+{
+	Super::SetPawn(InPawn);
+
+	if (InPawn)
+	{
+		ATank* PossessedTank = Cast<ATank>(InPawn);
+		if (PossessedTank)
+		{
+			PossessedTank->OnDeath.AddUniqueDynamic(this, &ATankPlayerController::HandleOnDeath);
+		}
+	}
+}
+
 void ATankPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 	AimTowardsCrosshair();
+}
+
+void ATankPlayerController::HandleOnDeath()
+{
+	UE_LOG(LogTemp, Warning, TEXT("%s - HandleOnDeath - Tank died"), *GetName());
 }
 
 void ATankPlayerController::AimTowardsCrosshair()

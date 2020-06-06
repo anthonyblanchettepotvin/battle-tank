@@ -9,6 +9,9 @@
 class UTankAimingComponent;
 class UTankMovementComponent;
 
+// Delegates
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeathSignature);
+
 UCLASS()
 class BATTLETANK_API ATank : public APawn
 {
@@ -50,4 +53,9 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	// ~ End APawn Interface
+
+	// Delegates
+	/** Called when the Tank has died. */
+	UPROPERTY(BlueprintAssignable, Category = "Tank|Health")
+		FOnDeathSignature OnDeath;
 };

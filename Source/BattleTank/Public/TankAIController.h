@@ -34,8 +34,13 @@ protected:
 	// Functions
 	// ~ Start AAIControllerInterface
 	virtual void BeginPlay() override;
+	virtual void SetPawn(APawn* InPawn) override;
 
 public:
 	virtual void Tick(float DeltaTime) override;
 	// ~ End AAIControllerInterface
+
+protected:
+	UFUNCTION()
+	virtual void HandleOnDeath();
 };

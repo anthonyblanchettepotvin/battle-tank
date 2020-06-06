@@ -40,7 +40,10 @@ float ATank::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, ACo
 
 	if (CurrentHealth <= 0.0f)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s - TakeDamage - Tank is dead"), *GetName());
+		if (OnDeath.IsBound())
+		{
+			OnDeath.Broadcast();
+		}
 	}
 
 	return DamageApplied;

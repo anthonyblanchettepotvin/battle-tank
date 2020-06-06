@@ -29,6 +29,7 @@ protected:
 	// Functions
 	// ~ Begin APlayerController Interface
 	virtual void BeginPlay() override;
+	virtual void SetPawn(APawn* InPawn) override;
 
 public:
 	virtual void Tick(float DeltaTime) override;
@@ -36,6 +37,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = Controller)
 		void AfterBeginPlay();
+
+protected:
+	UFUNCTION()
+	virtual void HandleOnDeath();
 
 private:
 	/** Aim the tank's barrel at the location where the player's crosshair intersects the world. */
