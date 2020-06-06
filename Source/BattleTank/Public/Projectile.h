@@ -36,15 +36,19 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Projectile, meta = (AllowPrivateAccess = true))
 		URadialForceComponent* ExplosionForce = nullptr;
-
+	
+protected:
 	// Properties
 	/** The number of seconds, after the impact, before the projectile is destroyed. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Projectile)
 		float DestroyDelay = 15.0f;
 
+	/** The amount of damage that the projectile does on impact. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Projectile)
+		float ProjectileDamage = 20.0f;
+
 	// Functions
 	// ~ Start AActor Interface
-protected:
 	virtual void BeginPlay() override;
 
 public:	

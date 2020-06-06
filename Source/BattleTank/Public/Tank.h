@@ -26,13 +26,28 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Tank, meta = (AllowPrivateAccess = true))
 		UTankMovementComponent* MovementComponent = nullptr;
 
+protected:
+	// Properties
+	/** The maximum amount of health of the Tank. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tank|Health")
+		float MaxHealth = 100.0f;
+
+	/** The current amount of health of the Tank. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tank|Health")
+		float CurrentHealth = MaxHealth;
+
+	// Getter/setters
+	/** Getter for HealthPercentage */
+	UFUNCTION(BlueprintPure, Category = "Tank|Health")
+		float GetHealthPercentage() const;
+
 	// Functions
 	// ~ Begin APawn Interface
-protected:
 	virtual void BeginPlay() override;
 
 public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	// ~ End APawn Interface
 };
