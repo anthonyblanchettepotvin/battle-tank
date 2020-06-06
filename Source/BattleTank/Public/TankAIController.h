@@ -10,7 +10,7 @@ class ATank;
 class UTankAimingComponent;
 
 /**
- * TankPlayerController is the base AI controller for a Tank pawn.
+ * TankAIController is the base AI controller for a Tank pawn.
  */
 UCLASS()
 class BATTLETANK_API ATankAIController : public AAIController

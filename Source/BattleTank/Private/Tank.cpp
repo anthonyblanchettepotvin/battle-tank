@@ -2,9 +2,9 @@
 
 #include "Tank.h"
 #include "Engine/World.h"
+#include "HealthComponent.h"
 #include "TankAimingComponent.h"
 #include "TankMovementComponent.h"
-#include "HealthComponent.h"
 
 ATank::ATank()
 {
