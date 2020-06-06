@@ -26,7 +26,11 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 		UTankAimingComponent* AimingComponentRef = nullptr;
 
+private:
+	bool bTankIsDead = false;
+
 	// Functions
+protected:
 	// ~ Begin APlayerController Interface
 	virtual void BeginPlay() override;
 	virtual void SetPawn(APawn* InPawn) override;
@@ -38,10 +42,6 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = Controller)
 		void AfterBeginPlay();
 
-protected:
-	UFUNCTION()
-	virtual void HandleOnDeath();
-
 private:
 	/** Aim the tank's barrel at the location where the player's crosshair intersects the world. */
 	void AimTowardsCrosshair();
@@ -52,4 +52,7 @@ private:
 	 * @return TRUE if the player's crosshair is aiming at something, FALSE otherwise
 	 */
 	bool GetCrosshairAimLocation(FVector& OutAimLocation) const;
+	
+	UFUNCTION()
+		virtual void HandleOnDeath();
 };

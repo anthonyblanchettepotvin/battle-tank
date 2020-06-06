@@ -5,6 +5,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Tank.h"
 #include "TankAimingComponent.h"
+#include "HealthComponent.h"
 
 ATankAIController::ATankAIController()
 {
@@ -30,7 +31,11 @@ void ATankAIController::SetPawn(APawn* InPawn)
 		ATank* PossessedTank = Cast<ATank>(InPawn);
 		if (PossessedTank)
 		{
-			PossessedTank->OnDeath.AddUniqueDynamic(this, &ATankAIController::HandleOnDeath);
+			UHealthComponent* HealthComponent = PossessedTank->GetHealthComponent();
+			if (HealthComponent)
+			{
+				HealthComponent->OnDeath.AddUniqueDynamic(this, &ATankAIController::HandleOnDeath);
+			}
 		}
 	}
 }
@@ -39,13 +44,14 @@ void ATankAIController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	APawn* PlayerTank = GetWorld()->GetFirstPlayerController()->GetPawn();
+	APawn* PlayerPawnRef = GetWorld()->GetFirstPlayerController()->GetPawn();
 
-	if (!ensure(AimingComponentRef && PlayerTank)) { return; }
+	if (bTankIsDead) { return; }
+	if (!ensure(AimingComponentRef && PlayerPawnRef)) { return; }
 
-	MoveToActor(PlayerTank, AcceptanceRadius);
+	MoveToActor(PlayerPawnRef, AcceptanceRadius);
 
-	FVector AimLocation = PlayerTank->GetActorLocation() + FVector(0.0f, 0.0f, 100.0f);
+	FVector AimLocation = PlayerPawnRef->GetActorLocation() + FVector(0.0f, 0.0f, 100.0f);
 	AimingComponentRef->AimAt(AimLocation);
 
 	if (AimingComponentRef->GetState() == ETankAimingState::Locked)
@@ -57,6 +63,8 @@ void ATankAIController::Tick(float DeltaTime)
 void ATankAIController::HandleOnDeath()
 {
 	UE_LOG(LogTemp, Warning, TEXT("%s - HandleOnDeath - Tank died"), *GetName());
+
+	bTankIsDead = true;
 
 	DetachFromPawn();
 }

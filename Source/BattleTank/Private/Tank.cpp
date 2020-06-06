@@ -13,22 +13,11 @@ ATank::ATank()
 	AimingComponent = CreateDefaultSubobject<UTankAimingComponent>(FName("AimingComponent"));
 	MovementComponent = CreateDefaultSubobject<UTankMovementComponent>(FName("MovementComponent"));
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(FName("HealthComponent"));
-
-	HealthComponent->OnDeath.AddUniqueDynamic(this, &ATank::HandleOnDeath);
-}
-
-float ATank::GetHealthPercentage() const
-{
-	if (!ensure(HealthComponent)) { return 0.0f; }
-
-	return HealthComponent->GetHealthPercentage();
 }
 
 void ATank::BeginPlay()
 {
 	Super::BeginPlay();
-
-	CurrentHealth = MaxHealth;
 }
 
 void ATank::Tick(float DeltaTime)
@@ -48,10 +37,7 @@ float ATank::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, ACo
 	return HealthComponent->ApplyDamage(DamageAmount);
 }
 
-void ATank::HandleOnDeath()
+UHealthComponent* ATank::GetHealthComponent() const
 {
-	if (OnDeath.IsBound())
-	{
-		OnDeath.Broadcast();
-	}
+	return HealthComponent;
 }

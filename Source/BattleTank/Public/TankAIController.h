@@ -31,7 +31,11 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 		UTankAimingComponent* AimingComponentRef = nullptr;
 
+private:
+	bool bTankIsDead = false;
+
 	// Functions
+protected:
 	// ~ Start AAIControllerInterface
 	virtual void BeginPlay() override;
 	virtual void SetPawn(APawn* InPawn) override;
@@ -40,7 +44,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	// ~ End AAIControllerInterface
 
-protected:
+private:
 	UFUNCTION()
-	virtual void HandleOnDeath();
+		virtual void HandleOnDeath();
 };

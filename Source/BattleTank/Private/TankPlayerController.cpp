@@ -4,6 +4,7 @@
 #include "Engine/World.h"
 #include "Tank.h"
 #include "TankAimingComponent.h"
+#include "HealthComponent.h"
 
 void ATankPlayerController::BeginPlay()
 {
@@ -26,7 +27,11 @@ void ATankPlayerController::SetPawn(APawn* InPawn)
 		ATank* PossessedTank = Cast<ATank>(InPawn);
 		if (PossessedTank)
 		{
-			PossessedTank->OnDeath.AddUniqueDynamic(this, &ATankPlayerController::HandleOnDeath);
+			UHealthComponent* HealthComponent = PossessedTank->GetHealthComponent();
+			if (HealthComponent)
+			{
+				HealthComponent->OnDeath.AddUniqueDynamic(this, &ATankPlayerController::HandleOnDeath);
+			}
 		}
 	}
 }
@@ -35,16 +40,11 @@ void ATankPlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (bTankIsDead) { return; }
+
 	AimTowardsCrosshair();
 }
 
-void ATankPlayerController::HandleOnDeath()
-{
-	UE_LOG(LogTemp, Warning, TEXT("%s - HandleOnDeath - Tank died"), *GetName());
-
-	DetachFromPawn();
-	StartSpectatingOnly();
-}
 
 void ATankPlayerController::AimTowardsCrosshair()
 {
@@ -76,4 +76,14 @@ bool ATankPlayerController::GetCrosshairAimLocation(FVector& OutAimLocation) con
 	if (bHit) { OutAimLocation = Hit.ImpactPoint; }
 
 	return bHit;
+}
+
+void ATankPlayerController::HandleOnDeath()
+{
+	UE_LOG(LogTemp, Warning, TEXT("%s - HandleOnDeath - Tank died"), *GetName());
+
+	bTankIsDead = true;
+
+	DetachFromPawn();
+	StartSpectatingOnly();
 }
