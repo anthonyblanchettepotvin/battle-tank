@@ -1,13 +1,12 @@
 // Copyright © 2020 Anthony Blanchette-Potvin All Rights Reserved
 
 #include "TankTrackComponent.h"
-#include "DrawDebugHelpers.h"
+#include "SpawnPoint.h"
+#include "SprungWheel.h"
 
 UTankTrackComponent::UTankTrackComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
-
-	OnComponentHit.AddDynamic(this, &UTankTrackComponent::OnComponentHitDelegate);
 }
 
 void UTankTrackComponent::BeginPlay()
@@ -20,55 +19,48 @@ void UTankTrackComponent::TickComponent(float DeltaTime, enum ELevelTick TickTyp
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-void UTankTrackComponent::OnComponentHitDelegate(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
-{
-	ApplyDrivingForce();
-	ApplySidewayForce();
-
-	// We make sure Throttle is reset to zero since SetThrottle adds up all the values for the current frame.
-	// This prevents the Throttle from staying at 1 or -1, thus applying full driving force at all time, even
-	// when the player is not inputting anything.
-	Throttle = 0.0f;
-}
-
 void UTankTrackComponent::SetThrottle(float Value)
 {
-	// We add the value to the current Throttle value since it could be set by multiple inputs for the current frame.
-	// This prevents the Throttle from being reset to zero, since one of many inputs may not used, thus calling
-	// SetThrottle with a value of 0.
-	Throttle = FMath::Clamp<float>(Throttle + Value, -1.0f, 1.0f);
+	float Throttle = FMath::Clamp<float>(Value, -1.0f, 1.0f);
+
+	ApplyDrivingForce(Throttle);
 }
 
-void UTankTrackComponent::ApplyDrivingForce()
+TArray<ASprungWheel*> UTankTrackComponent::GetWheels() const
 {
-	FVector ForceApplied = GetForwardVector() * Throttle * MaxDrivingForce;
-	FVector ForceLocation = GetComponentLocation();
+	TArray<ASprungWheel*> Wheels;
+	TArray<USceneComponent*> Children;
 
-	UPrimitiveComponent* TankRoot = Cast<UPrimitiveComponent>(GetOwner()->GetRootComponent());
+	GetChildrenComponents(false, Children);
 
-	if (!ensure(TankRoot)) { return; }
+	for (USceneComponent* Child : Children)
+	{
+		USpawnPoint* SpawnPoint = Cast<USpawnPoint>(Child);
+		if (SpawnPoint) 
+		{
+			ASprungWheel* Wheel = Cast<ASprungWheel>(SpawnPoint->GetSpawnedActor());
+			if (Wheel)
+			{
+				Wheels.AddUnique(Wheel);
+			}
+		}
+	}
 
-	TankRoot->AddForceAtLocation(ForceApplied, ForceLocation);
+	return Wheels;
 }
 
-void UTankTrackComponent::ApplySidewayForce()
+void UTankTrackComponent::ApplyDrivingForce(float Throttle)
 {
-	FVector RightVector = GetRightVector();
-	FVector VelocityVector = GetComponentVelocity();
-	//DrawDebugDirectionalArrow(GetWorld(), GetComponentLocation(), GetComponentLocation() + (RightVector.GetSafeNormal() * 200.0f), 15.0f, FColor::Black, false, -1.0f, 0, 5.0f);
-	//DrawDebugDirectionalArrow(GetWorld(), GetComponentLocation(), GetComponentLocation() + VelocityVector, 15.0f, FColor::Black, false, -1.0f, 0, 5.0f);
-	float SidewaySpeed = FVector::DotProduct(RightVector, VelocityVector);
+	TArray<ASprungWheel*> Wheels = GetWheels();
 
-	// We want to apply the force in the opposite direction, that's why we negate SidewayAcceleration
-	float DeltaTime = GetWorld()->GetDeltaSeconds();
-	FVector SidewayAcceleration = -SidewaySpeed * GetRightVector() / DeltaTime;
+	float ForceApplied = Throttle * MaxDrivingForce;
+	float ForcePerWheel = ForceApplied / Wheels.Num();
 
-	UPrimitiveComponent* TankRoot = Cast<UPrimitiveComponent>(GetOwner()->GetRootComponent());
-	if (!ensure(TankRoot)) { return; }
-
-	// There is two tracks, that's why we divide by 2
-	FVector SidewayForce = (TankRoot->GetMass() * SidewayAcceleration) / 2;
-	//DrawDebugDirectionalArrow(GetWorld(), GetComponentLocation(), GetComponentLocation() + SidewayForce.GetSafeNormal(), 15.0f, FColor::Red, false, -1.0f, 0, 5.0f);
-
-	TankRoot->AddForce(SidewayForce);
+	for (ASprungWheel* Wheel : Wheels)
+	{
+		if (Wheel)
+		{
+			Wheel->AddDrivingForce(ForcePerWheel);
+		}
+	}
 }

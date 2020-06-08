@@ -6,6 +6,9 @@
 #include "Components/StaticMeshComponent.h"
 #include "TankTrackComponent.generated.h"
 
+// Forward declarations
+class ASprungWheel;
+
 /**
  * TankTrackComponent implements the behavior of a tank track.
  */
@@ -20,10 +23,8 @@ public:
 protected:
 	// Properties
 	/** Max force in newtons output by the track. */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Track)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Track")
 		float MaxDrivingForce = 400000.0f; // Assume that the tank is 40 tons and acceleration is 1 g (9.81 m/s2)
-
-	float Throttle = 0.0f;
 
 	// Functions
 	// ~ Start UStaticMeshComponent Interface
@@ -35,8 +36,12 @@ public:
 
 	// Getters/setters
 	/** Setter for Throlle */
-	UFUNCTION(BlueprintCallable, Category = Track)
+	UFUNCTION(BlueprintCallable, Category = "Track")
 		void SetThrottle(float Value);
+
+	/** Getter for Wheels */
+	UFUNCTION(BlueprintPure, Category = "Track")
+		TArray<ASprungWheel*> GetWheels() const;
 
 private:
 	/**
@@ -45,20 +50,5 @@ private:
 	 * A Throttle of -1 means the track is pushing the tank backward. 
 	 * A Throttle of 1 means the track is pulling the tank forward.
 	 */
-	void ApplyDrivingForce();
-
-	/**
-	 * Apply a force in the opposite direction of the track's velocity. 
-	 * This simulates sideway friction and prevent the tank from drifting.
-	 */
-	void ApplySidewayForce();
-
-protected:
-	// Delegates
-	/**
-	 * Delegate for OnComponentHit.
-	 * @see UPrimitiveComponent
-	 */
-	UFUNCTION()
-		virtual void OnComponentHitDelegate(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	void ApplyDrivingForce(float Throttle);
 };
