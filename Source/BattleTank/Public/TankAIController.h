@@ -6,6 +6,7 @@
 #include "AIController.h"
 #include "TankAIController.generated.h"
 
+// Forward declarations
 class ATank;
 class UTankAimingComponent;
 
@@ -45,6 +46,7 @@ public:
 	// ~ End AAIControllerInterface
 
 private:
+	/** Handle OnDeath broadcasts from possessed Tank. */
 	UFUNCTION()
-		virtual void HandleOnDeath();
+		virtual void HandleOnTankDeath();
 };

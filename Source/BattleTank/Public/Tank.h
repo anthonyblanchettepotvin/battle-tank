@@ -6,9 +6,13 @@
 #include "GameFramework/Pawn.h"
 #include "Tank.generated.h"
 
+// Forward declarations
 class UTankAimingComponent;
 class UTankMovementComponent;
 class UHealthComponent;
+
+// Delegates
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnTankDeathSignature);
 
 UCLASS()
 class BATTLETANK_API ATank : public APawn
@@ -41,8 +45,19 @@ public:
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	// ~ End APawn Interface
 
+private:
+	/** Handle OnDeath broadcasts from HealthComponent.*/
+	UFUNCTION()
+		void HandleHealthComponentOnDeath();
+
+public:
 	// Getters/setters
 	/** Getter for HealthComponent */
 	UFUNCTION(BlueprintPure, Category = "Tank")
 		UHealthComponent* GetHealthComponent() const;
+
+	// Delegates
+	/** Called when the tank has died. */
+	UPROPERTY(BlueprintAssignable, Category = "Tank")
+		FOnTankDeathSignature OnDeath;
 };

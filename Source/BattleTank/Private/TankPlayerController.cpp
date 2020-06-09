@@ -4,7 +4,6 @@
 #include "Engine/World.h"
 #include "Tank.h"
 #include "TankAimingComponent.h"
-#include "HealthComponent.h"
 
 void ATankPlayerController::BeginPlay()
 {
@@ -27,11 +26,7 @@ void ATankPlayerController::SetPawn(APawn* InPawn)
 		ATank* PossessedTank = Cast<ATank>(InPawn);
 		if (PossessedTank)
 		{
-			UHealthComponent* HealthComponent = PossessedTank->GetHealthComponent();
-			if (HealthComponent)
-			{
-				HealthComponent->OnDeath.AddUniqueDynamic(this, &ATankPlayerController::HandleOnDeath);
-			}
+			PossessedTank->OnDeath.AddUniqueDynamic(this, &ATankPlayerController::HandleTankOnDeath);
 		}
 	}
 }
@@ -78,9 +73,9 @@ bool ATankPlayerController::GetCrosshairAimLocation(FVector& OutAimLocation) con
 	return bHit;
 }
 
-void ATankPlayerController::HandleOnDeath()
+void ATankPlayerController::HandleTankOnDeath()
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s - HandleOnDeath - Tank died"), *GetName());
+	UE_LOG(LogTemp, Warning, TEXT("%s - HandleTankOnDeath - Tank died"), *GetName());
 
 	bTankIsDead = true;
 

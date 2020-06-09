@@ -1,7 +1,6 @@
 // Copyright © 2020 Anthony Blanchette-Potvin All Rights Reserved
 
 #include "Tank.h"
-#include "Engine/World.h"
 #include "HealthComponent.h"
 #include "TankAimingComponent.h"
 #include "TankMovementComponent.h"
@@ -18,6 +17,11 @@ ATank::ATank()
 void ATank::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (HealthComponent)
+	{
+		HealthComponent->OnDeath.AddUniqueDynamic(this, &ATank::HandleHealthComponentOnDeath);
+	}
 }
 
 void ATank::Tick(float DeltaTime)
@@ -35,6 +39,14 @@ float ATank::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, ACo
 	if (!ensure(HealthComponent)) { return 0.0f; }
 
 	return HealthComponent->ApplyDamage(DamageAmount);
+}
+
+void ATank::HandleHealthComponentOnDeath()
+{
+	if (OnDeath.IsBound())
+	{
+		OnDeath.Broadcast();
+	}
 }
 
 UHealthComponent* ATank::GetHealthComponent() const

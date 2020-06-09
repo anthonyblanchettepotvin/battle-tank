@@ -5,7 +5,6 @@
 #include "GameFramework/PlayerController.h"
 #include "Tank.h"
 #include "TankAimingComponent.h"
-#include "HealthComponent.h"
 
 ATankAIController::ATankAIController()
 {
@@ -31,11 +30,7 @@ void ATankAIController::SetPawn(APawn* InPawn)
 		ATank* PossessedTank = Cast<ATank>(InPawn);
 		if (PossessedTank)
 		{
-			UHealthComponent* HealthComponent = PossessedTank->GetHealthComponent();
-			if (HealthComponent)
-			{
-				HealthComponent->OnDeath.AddUniqueDynamic(this, &ATankAIController::HandleOnDeath);
-			}
+			PossessedTank->OnDeath.AddUniqueDynamic(this, &ATankAIController::HandleOnTankDeath);
 		}
 	}
 }
@@ -60,9 +55,9 @@ void ATankAIController::Tick(float DeltaTime)
 	}
 }
 
-void ATankAIController::HandleOnDeath()
+void ATankAIController::HandleOnTankDeath()
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s - HandleOnDeath - Tank died"), *GetName());
+	UE_LOG(LogTemp, Warning, TEXT("%s - HandleOnTankDeath - Tank died"), *GetName());
 
 	bTankIsDead = true;
 
