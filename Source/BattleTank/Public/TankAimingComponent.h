@@ -4,23 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "TankAimingStateEnum.h"
 #include "TankAimingComponent.generated.h"
 
 class AProjectile;
 class UTankBarrelComponent;
 class UTankTurretComponent;
-
-/**
- * Enum indicating different state of the TankAimingComponent.
- */
-UENUM()
-enum class ETankAimingState : uint8
-{
-	Reloading,
-	Aiming,
-	Locked,
-	OutOfAmmo
-};
 
 /** 
  * TankAimingComponent handles the aiming and firing of a Tank pawn.

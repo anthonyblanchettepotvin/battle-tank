@@ -8,7 +8,6 @@
 
 // Forward declarations
 class ATank;
-class UTankAimingComponent;
 
 /**
  * TankAIController is the base AI controller for a Tank pawn.
@@ -22,31 +21,33 @@ public:
 	/** Default constructor for ATankAIController. */
 	ATankAIController();
 
-protected:
 	// Properties
+protected:
 	/** Radius that the AI must be in in order to be considered close enough to it's target. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Controller|Pathfinding")
 		float AcceptanceRadius = 3000.0f;
-
-	/** Reference to the TankAimingComponent on the possessed pawn. */
-	UPROPERTY(BlueprintReadOnly)
-		UTankAimingComponent* AimingComponentRef = nullptr;
 
 private:
 	bool bTankIsDead = false;
 
 	// Functions
 protected:
-	// ~ Start AAIControllerInterface
+	// ~ Start AAIController Interface
 	virtual void BeginPlay() override;
 	virtual void SetPawn(APawn* InPawn) override;
 
 public:
 	virtual void Tick(float DeltaTime) override;
-	// ~ End AAIControllerInterface
+	// ~ End AAIController Interface
 
 private:
 	/** Handle OnDeath broadcasts from possessed Tank. */
 	UFUNCTION()
 		virtual void HandleOnTankDeath();
+
+	// Getters/setters
+public:
+	/** Getter for ControlledTank */
+	UFUNCTION(BlueprintPure, Category = "Controller")
+		ATank* GetControlledTank() const;
 };

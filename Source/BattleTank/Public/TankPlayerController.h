@@ -7,7 +7,7 @@
 #include "TankPlayerController.generated.h"
 
 // Forward declarations
-class UTankAimingComponent;
+class ATank;
 
 /**
  * TankPlayerController is the base player controller for a Tank pawn.
@@ -17,15 +17,15 @@ class BATTLETANK_API ATankPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
-protected:
-	// Properties
-	/** Crosshair position in the viewport in percentage. */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Controller, meta = (ClampMin = 0, ClampMax = 1))
-		FVector2D CrosshairPosition = { 0.5f, 0.33f };
+public:
+	/** Default constructor for ATankPlayerController. */
+	ATankPlayerController();
 
-	/** Reference to the TankAimingComponent on the possessed pawn. */
-	UPROPERTY(BlueprintReadOnly)
-		UTankAimingComponent* AimingComponentRef = nullptr;
+	// Properties
+protected:
+	/** Crosshair position in the viewport in percentage. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Controller", meta = (ClampMin = 0, ClampMax = 1))
+		FVector2D CrosshairPosition = { 0.5f, 0.33f };
 
 private:
 	bool bTankIsDead = false;
@@ -40,7 +40,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	// ~ End APlayerController Interface
 
-	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = Controller)
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "Controller")
 		void AfterBeginPlay();
 
 private:
@@ -57,4 +57,10 @@ private:
 	/** Handle OnDeath broadcasts from possessed Tank. */
 	UFUNCTION()
 		virtual void HandleTankOnDeath();
+
+	// Getters/setters
+public:
+	/** Getter for ControlledTank */
+	UFUNCTION(BlueprintPure, Category = "Controller")
+		ATank* GetControlledTank() const;
 };

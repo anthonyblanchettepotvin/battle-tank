@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "TankAimingStateEnum.h"
 #include "Tank.generated.h"
 
 // Forward declarations
@@ -23,8 +24,8 @@ public:
 	/** Default constructor for ATank. */
 	ATank();
 
-private:
 	// Components
+private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tank", meta = (AllowPrivateAccess = true))
 		UTankAimingComponent* AimingComponent = nullptr;
 
@@ -51,7 +52,29 @@ private:
 		void HandleHealthComponentOnDeath();
 
 public:
+	/**
+	 * Tell the tank to aim at a location.
+	 * @param TargetLocation The location at which the tank should aim
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Tank")
+		virtual void AimAt(FVector TargetLocation);
+
+	/** 
+	 * Tell the tank to fire. 
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Tank")
+		virtual void Fire();
+
 	// Getters/setters
+public:
+	/** Getter for AimingState */
+	UFUNCTION(BlueprintPure, Category = "Tank")
+		ETankAimingState GetAimingState() const;
+
+	/** Getter for AimingComponent */
+	UFUNCTION(BlueprintPure, Category = "Tank")
+		UTankAimingComponent* GetAimingComponent() const;
+
 	/** Getter for HealthComponent */
 	UFUNCTION(BlueprintPure, Category = "Tank")
 		UHealthComponent* GetHealthComponent() const;

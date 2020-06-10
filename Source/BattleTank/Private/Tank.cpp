@@ -36,7 +36,7 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 float ATank::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	if (!ensure(HealthComponent)) { return 0.0f; }
+	if (!HealthComponent) { return 0.0f; }
 
 	return HealthComponent->ApplyDamage(DamageAmount);
 }
@@ -47,6 +47,26 @@ void ATank::HandleHealthComponentOnDeath()
 	{
 		OnDeath.Broadcast();
 	}
+}
+
+void ATank::AimAt(FVector TargetLocation)
+{
+	AimingComponent->AimAt(TargetLocation);
+}
+
+void ATank::Fire()
+{
+	AimingComponent->Fire();
+}
+
+ETankAimingState ATank::GetAimingState() const
+{
+	return AimingComponent->GetState();
+}
+
+UTankAimingComponent* ATank::GetAimingComponent() const
+{
+	return AimingComponent;
 }
 
 UHealthComponent* ATank::GetHealthComponent() const

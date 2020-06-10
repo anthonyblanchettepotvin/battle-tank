@@ -3,16 +3,15 @@
 #include "TankPlayerController.h"
 #include "Engine/World.h"
 #include "Tank.h"
-#include "TankAimingComponent.h"
+
+ATankPlayerController::ATankPlayerController()
+{
+	PrimaryActorTick.bCanEverTick = true;
+}
 
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (ensure(GetPawn()))
-	{
-		AimingComponentRef = GetPawn()->FindComponentByClass<UTankAimingComponent>();
-	}
 
 	AfterBeginPlay();
 }
@@ -23,10 +22,10 @@ void ATankPlayerController::SetPawn(APawn* InPawn)
 
 	if (InPawn)
 	{
-		ATank* PossessedTank = Cast<ATank>(InPawn);
-		if (PossessedTank)
+		ATank* ControlledTank = GetControlledTank();
+		if (ControlledTank)
 		{
-			PossessedTank->OnDeath.AddUniqueDynamic(this, &ATankPlayerController::HandleTankOnDeath);
+			ControlledTank->OnDeath.AddUniqueDynamic(this, &ATankPlayerController::HandleTankOnDeath);
 		}
 	}
 }
@@ -43,13 +42,15 @@ void ATankPlayerController::Tick(float DeltaTime)
 
 void ATankPlayerController::AimTowardsCrosshair()
 {
-	if (!ensure(AimingComponentRef)) { return; }
+	ATank* ControlledTank = GetControlledTank();
+
+	if (!ControlledTank) { return; }
 	
 	FVector AimLocation;
 
 	if (GetCrosshairAimLocation(AimLocation))
 	{
-		AimingComponentRef->AimAt(AimLocation);
+		ControlledTank->AimAt(AimLocation);
 	}
 }
 
@@ -75,10 +76,13 @@ bool ATankPlayerController::GetCrosshairAimLocation(FVector& OutAimLocation) con
 
 void ATankPlayerController::HandleTankOnDeath()
 {
-	UE_LOG(LogTemp, Warning, TEXT("%s - HandleTankOnDeath - Tank died"), *GetName());
-
 	bTankIsDead = true;
 
 	DetachFromPawn();
 	StartSpectatingOnly();
+}
+
+ATank* ATankPlayerController::GetControlledTank() const
+{
+	return Cast<ATank>(GetPawn());
 }
