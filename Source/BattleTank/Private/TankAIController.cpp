@@ -43,7 +43,7 @@ void ATankAIController::Tick(float DeltaTime)
 	MoveToActor(PlayerPawn, AcceptanceRadius);
 
 	FVector AimLocation = PlayerPawn->GetActorLocation() + FVector(0.0f, 0.0f, 100.0f);
-	ControlledTank->AimAt(AimLocation);
+	ControlledTank->AimAtLocation(AimLocation);
 
 	if (ControlledTank->GetAimingState() == ETankAimingState::Locked)
 	{

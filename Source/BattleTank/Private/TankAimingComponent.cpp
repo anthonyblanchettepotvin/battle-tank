@@ -47,7 +47,7 @@ void UTankAimingComponent::Initialize(UTankBarrelComponent* NewBarrel, UTankTurr
 	TurretRef = NewTurret;
 }
 
-void UTankAimingComponent::AimAt(FVector Location)
+void UTankAimingComponent::AimAtLocation(FVector Location)
 {
 	if (!ensure(BarrelRef && TurretRef)) { return; }
 	

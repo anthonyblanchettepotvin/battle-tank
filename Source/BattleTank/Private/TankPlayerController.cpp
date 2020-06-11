@@ -50,7 +50,7 @@ void ATankPlayerController::AimTowardsCrosshair()
 
 	if (GetCrosshairAimLocation(AimLocation))
 	{
-		ControlledTank->AimAt(AimLocation);
+		ControlledTank->AimAtLocation(AimLocation);
 	}
 }
 

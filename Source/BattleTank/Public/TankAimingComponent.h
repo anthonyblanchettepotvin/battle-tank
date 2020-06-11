@@ -86,7 +86,7 @@ public:
 	 * @param Location The location at which the tank should aim
 	 * @param InitialProjectileSpeed The initial speed at which a projectile is fired
 	 */
-	virtual void AimAt(FVector Location);
+	virtual void AimAtLocation(FVector Location);
 
 	/**
 	 * Tell the component to move the barrel and the turret in order to aim towards a direction.
