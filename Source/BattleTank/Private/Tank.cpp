@@ -36,9 +36,7 @@ void ATank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 float ATank::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	const float MinDamage = 0.0f;
-
-	if (!HealthComponent) { return MinDamage; }
+	if (!HealthComponent) { return 0.0f; }
 
 	return HealthComponent->ApplyDamage(DamageAmount);
 }

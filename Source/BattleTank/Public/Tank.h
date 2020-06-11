@@ -64,7 +64,10 @@ public:
 		virtual void Fire();
 
 private:
-	/** Handle OnDeath broadcast from HealthComponent.*/
+	/**
+	 * Handle OnDeath broadcast from HealthComponent.
+	 * @see UHealthComponent
+	 */
 	UFUNCTION()
 		void HandleHealthComponentOnDeath();
 
