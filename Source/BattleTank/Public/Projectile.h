@@ -6,71 +6,82 @@
 #include "GameFramework/Actor.h"
 #include "Projectile.generated.h"
 
-class UProjectileMovementComponent;
-class UStaticMeshComponent;
+// Forward declarations
 class UParticleSystemComponent;
+class UProjectileMovementComponent;
 class URadialForceComponent;
+class UStaticMeshComponent;
 
+/** 
+ * Projectile is an Actor that implements the basic behavior of a projectile.
+ * @see AActor
+ */
 UCLASS()
 class BATTLETANK_API AProjectile : public AActor
 {
 	GENERATED_BODY()
 	
+	// Constructors
 public:	
 	/** Default constructor for AProjectile. */
 	AProjectile();
 
-private:
 	// Components
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Projectile, meta = (AllowPrivateAccess = true))
+private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Projectile", meta = (AllowPrivateAccess = true))
+		USceneComponent* Root = nullptr;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Projectile", meta = (AllowPrivateAccess = true))
 		UProjectileMovementComponent* ProjectileMovement = nullptr;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Projectile, meta = (AllowPrivateAccess = true))
-		UStaticMeshComponent* CollisionMesh = nullptr;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Projectile", meta = (AllowPrivateAccess = true))
+		UStaticMeshComponent* ProjectileMesh = nullptr;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Projectile, meta = (AllowPrivateAccess = true))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Projectile", meta = (AllowPrivateAccess = true))
 		UParticleSystemComponent* LaunchBlast = nullptr;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Projectile, meta = (AllowPrivateAccess = true))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Projectile", meta = (AllowPrivateAccess = true))
 		UParticleSystemComponent* ImpactBlast = nullptr;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Projectile, meta = (AllowPrivateAccess = true))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Projectile", meta = (AllowPrivateAccess = true))
 		URadialForceComponent* ExplosionForce = nullptr;
-	
-protected:
+
 	// Properties
+private:
 	/** The number of seconds, after the impact, before the projectile is destroyed. */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Projectile)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Projectile", meta = (AllowPrivateAccess = true))
 		float DestroyDelay = 15.0f;
 
 	/** The amount of damage that the projectile does on impact. */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Projectile)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Projectile", meta = (AllowPrivateAccess = true))
 		float ProjectileDamage = 20.0f;
 
-	// Functions
 	// ~ Start AActor Interface
+protected:
 	virtual void BeginPlay() override;
 
 public:	
 	virtual void Tick(float DeltaTime) override;
 	// ~ End AActor Interface
 
+	// Functions
+public:
 	/**
 	 * Launch the projectile.
 	 * @param Speed The initial speed of the projectile at launch
 	 */
-	virtual void Launch(float Speed);
+	UFUNCTION(BlueprintCallable, Category = "Projectile")
+		virtual void Launch(const float Speed);
+
+	/** Destroy the projectile. */
+	UFUNCTION(BlueprintCallable, Category = "Projectile")
+		virtual void DestroyProjectile();
 
 private:
-	/** Destroy the projectile. */
-	void DestroyProjectile();
-
-protected:
-	// Delegates
 	/**
-	 * Delegate for OnComponentHit.
+	 * Handle OnComponentHit broadcast from ProjectileMesh.
 	 * @see UPrimitiveComponent
 	 */
 	UFUNCTION()
-		virtual void OnComponentHitDelegate(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+		void HandleCollisionMeshOnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 };

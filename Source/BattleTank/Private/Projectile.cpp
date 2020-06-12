@@ -13,30 +13,36 @@ AProjectile::AProjectile()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	CollisionMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("CollisionMesh"));
-	CollisionMesh->SetNotifyRigidBodyCollision(true);
-	CollisionMesh->SetVisibility(false);
-	SetRootComponent(CollisionMesh);
+	Root = CreateDefaultSubobject<USceneComponent>(FName("Root"));
+	SetRootComponent(Root);
+
+	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("ProjectileMesh"));
+	ProjectileMesh->SetNotifyRigidBodyCollision(true);
+	ProjectileMesh->SetupAttachment(RootComponent);
 
 	LaunchBlast = CreateDefaultSubobject<UParticleSystemComponent>(FName("LaunchBlast"));
+	ImpactBlast->SetAutoActivate(false);
 	LaunchBlast->SetupAttachment(RootComponent);
 
 	ImpactBlast = CreateDefaultSubobject<UParticleSystemComponent>(FName("ImpactBlast"));
 	ImpactBlast->SetAutoActivate(false);
 	ImpactBlast->SetupAttachment(RootComponent);
 
-	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(FName("ProjectileMovement"));
-	ProjectileMovement->SetAutoActivate(false);
-
 	ExplosionForce = CreateDefaultSubobject<URadialForceComponent>(FName("ExplosionForce"));
 	ExplosionForce->SetupAttachment(RootComponent);
 
-	CollisionMesh->OnComponentHit.AddDynamic(this, &AProjectile::OnComponentHitDelegate);
+	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(FName("ProjectileMovement"));
+	ProjectileMovement->SetAutoActivate(false);
 }
 
 void AProjectile::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (ProjectileMesh)
+	{
+		ProjectileMesh->OnComponentHit.AddDynamic(this, &AProjectile::HandleCollisionMeshOnComponentHit);
+	}
 }
 
 void AProjectile::Tick(float DeltaTime)
@@ -44,12 +50,17 @@ void AProjectile::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AProjectile::Launch(float Speed)
+void AProjectile::Launch(const float Speed)
 {
-	if (!ensure(ProjectileMovement)) { return; }
+	if (!ProjectileMovement) { return; }
 
 	ProjectileMovement->SetVelocityInLocalSpace(FVector::ForwardVector * Speed);
 	ProjectileMovement->Activate();
+
+	if (LaunchBlast)
+	{
+		LaunchBlast->Activate();
+	}
 }
 
 void AProjectile::DestroyProjectile()
@@ -57,24 +68,33 @@ void AProjectile::DestroyProjectile()
 	Destroy();
 }
 
-void AProjectile::OnComponentHitDelegate(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void AProjectile::HandleCollisionMeshOnComponentHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	CollisionMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	CollisionMesh->SetVisibility(false);
+	if (ProjectileMesh)
+	{
+		ProjectileMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		ProjectileMesh->SetVisibility(false);
+	}
+	
+	if (LaunchBlast && ImpactBlast)
+	{
+		LaunchBlast->Deactivate();
+		ImpactBlast->Activate();
+	}
 
-	LaunchBlast->Deactivate();
-	ImpactBlast->Activate();
-
-	ExplosionForce->FireImpulse();
-	UGameplayStatics::ApplyRadialDamage(
-		this,
-		ProjectileDamage,
-		Hit.ImpactPoint,
-		ExplosionForce->Radius,
-		UDamageType::StaticClass(),
-		TArray<AActor*>(),
-		this
-	);
+	if (ExplosionForce)
+	{
+		ExplosionForce->FireImpulse();
+		UGameplayStatics::ApplyRadialDamage(
+			this,
+			ProjectileDamage,
+			Hit.ImpactPoint,
+			ExplosionForce->Radius,
+			UDamageType::StaticClass(),
+			TArray<AActor*>(),
+			this
+		);
+	}
 
 	FTimerHandle TimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AProjectile::DestroyProjectile, 20.0f, false);
