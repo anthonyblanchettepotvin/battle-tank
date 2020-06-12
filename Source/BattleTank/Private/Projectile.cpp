@@ -21,7 +21,7 @@ AProjectile::AProjectile()
 	ProjectileMesh->SetupAttachment(RootComponent);
 
 	LaunchBlast = CreateDefaultSubobject<UParticleSystemComponent>(FName("LaunchBlast"));
-	ImpactBlast->SetAutoActivate(false);
+	LaunchBlast->SetAutoActivate(false);
 	LaunchBlast->SetupAttachment(RootComponent);
 
 	ImpactBlast = CreateDefaultSubobject<UParticleSystemComponent>(FName("ImpactBlast"));
