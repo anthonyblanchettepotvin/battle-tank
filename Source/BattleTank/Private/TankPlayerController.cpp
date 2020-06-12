@@ -13,7 +13,14 @@ void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	AfterBeginPlay();
+	OnBeginPlayEnd();
+}
+
+void ATankPlayerController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	AimTowardsCrosshair();
 }
 
 void ATankPlayerController::SetPawn(APawn* InPawn)
@@ -26,19 +33,11 @@ void ATankPlayerController::SetPawn(APawn* InPawn)
 		if (ControlledTank)
 		{
 			ControlledTank->OnDeath.AddUniqueDynamic(this, &ATankPlayerController::HandleTankOnDeath);
+
+			AttachToPawn(ControlledTank);
 		}
 	}
 }
-
-void ATankPlayerController::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-	if (bTankIsDead) { return; }
-
-	AimTowardsCrosshair();
-}
-
 
 void ATankPlayerController::AimTowardsCrosshair()
 {
@@ -48,37 +47,41 @@ void ATankPlayerController::AimTowardsCrosshair()
 	
 	FVector AimLocation;
 
-	if (GetCrosshairAimLocation(AimLocation))
+	if (CrosshairToWorldLocation(AimLocation))
 	{
 		ControlledTank->AimAtLocation(AimLocation);
 	}
 }
 
-bool ATankPlayerController::GetCrosshairAimLocation(FVector& OutAimLocation) const
+bool ATankPlayerController::CrosshairToWorldLocation(FVector& OutLocation) const
 {
 	int32 ViewportX, ViewportY;
 	GetViewportSize(ViewportX, ViewportY);
 	FVector2D ScreenPosition = { ViewportX * CrosshairPosition.X, ViewportY * CrosshairPosition.Y };
 
-	bool bHit;
-	FHitResult Hit;
+	bool bHitFound;
+	FHitResult HitResult;
 
-	FCollisionQueryParams Params;
-	Params.AddIgnoredActor(GetPawn());
-	Params.bTraceComplex = true;
+	FCollisionQueryParams CollisionQueryParams;
+	CollisionQueryParams.AddIgnoredActor(GetPawn());
+	CollisionQueryParams.bTraceComplex = true;
 
-	bHit = GetHitResultAtScreenPosition(ScreenPosition, ECC_Visibility, Params, Hit);
+	bHitFound = GetHitResultAtScreenPosition(
+		ScreenPosition,
+		ECC_Visibility,
+		CollisionQueryParams,
+		HitResult
+	);
 
-	if (bHit) { OutAimLocation = Hit.ImpactPoint; }
+	if (bHitFound) { OutLocation = HitResult.ImpactPoint; }
 
-	return bHit;
+	return bHitFound;
 }
 
 void ATankPlayerController::HandleTankOnDeath()
 {
-	bTankIsDead = true;
-
 	DetachFromPawn();
+	UnPossess();
 	StartSpectatingOnly();
 }
 

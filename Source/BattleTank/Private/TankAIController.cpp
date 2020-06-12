@@ -15,6 +15,26 @@ void ATankAIController::BeginPlay()
 	Super::BeginPlay();
 }
 
+void ATankAIController::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	ATank* ControlledTank = GetControlledTank();
+	APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
+
+	if (!ControlledTank || !PlayerPawn) { return; }
+
+	MoveToActor(PlayerPawn, AcceptanceRadius);
+
+	FVector AimLocation = PlayerPawn->GetActorLocation() + AimLocationOffset;
+	ControlledTank->AimAtLocation(AimLocation);
+
+	if (ControlledTank->GetAimingState() == ETankAimingState::Locked)
+	{
+		ControlledTank->Fire();
+	}
+}
+
 void ATankAIController::SetPawn(APawn* InPawn)
 {
 	Super::SetPawn(InPawn);
@@ -25,37 +45,16 @@ void ATankAIController::SetPawn(APawn* InPawn)
 		if (ControlledTank)
 		{
 			ControlledTank->OnDeath.AddUniqueDynamic(this, &ATankAIController::HandleOnTankDeath);
+
+			AttachToPawn(ControlledTank);
 		}
-	}
-}
-
-void ATankAIController::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-	if (bTankIsDead) { return; }
-
-	ATank* ControlledTank = GetControlledTank();
-	APawn* PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
-
-	if (!ControlledTank || !PlayerPawn) { return; }
-
-	MoveToActor(PlayerPawn, AcceptanceRadius);
-
-	FVector AimLocation = PlayerPawn->GetActorLocation() + FVector(0.0f, 0.0f, 100.0f);
-	ControlledTank->AimAtLocation(AimLocation);
-
-	if (ControlledTank->GetAimingState() == ETankAimingState::Locked)
-	{
-		ControlledTank->Fire();
 	}
 }
 
 void ATankAIController::HandleOnTankDeath()
 {
-	bTankIsDead = true;
-
 	DetachFromPawn();
+	UnPossess();
 }
 
 ATank* ATankAIController::GetControlledTank() const

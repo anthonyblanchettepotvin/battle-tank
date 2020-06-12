@@ -10,53 +10,65 @@
 class ATank;
 
 /**
- * TankPlayerController is the base player controller for a Tank pawn.
+ * TankPlayerController is the base PlayerController for a Tank.
+ * @see APlayerController
+ * @see ATank
  */
 UCLASS()
 class BATTLETANK_API ATankPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
+	// Constructors
 public:
 	/** Default constructor for ATankPlayerController. */
 	ATankPlayerController();
 
 	// Properties
-protected:
+private:
 	/** Crosshair position in the viewport in percentage. */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Controller", meta = (ClampMin = 0, ClampMax = 1))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Controller", meta = (AllowPrivateAccess = true, ClampMin = 0, ClampMax = 1))
 		FVector2D CrosshairPosition = { 0.5f, 0.33f };
 
-private:
-	bool bTankIsDead = false;
-
-	// Functions
-protected:
 	// ~ Begin APlayerController Interface
+protected:
 	virtual void BeginPlay() override;
-	virtual void SetPawn(APawn* InPawn) override;
 
 public:
 	virtual void Tick(float DeltaTime) override;
+	virtual void SetPawn(APawn* InPawn) override;
 	// ~ End APlayerController Interface
 
-	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "Controller")
-		void AfterBeginPlay();
-
-private:
-	/** Aim the tank's barrel at the location where the player's crosshair intersects the world. */
-	void AimTowardsCrosshair();
+	// Functions
+public:
+	/** Make the controlled Tank aim at the world space location where the player's crosshair is aiming. */
+	UFUNCTION(BlueprintCallable, Category = "Controller")
+		virtual void AimTowardsCrosshair();
 
 	/**
 	 * Get the world space location where the player's crosshair is aiming.
-	 * @param OutAimLocation The world space location where the player's crosshair is aiming
+	 * @param OutLocation The world space location where the player's crosshair is aiming
 	 * @return TRUE if the player's crosshair is aiming at something, FALSE otherwise
 	 */
-	bool GetCrosshairAimLocation(FVector& OutAimLocation) const;
-	
-	/** Handle OnDeath broadcasts from possessed Tank. */
+	UFUNCTION(BlueprintCallable, Category = "Controller")
+		virtual bool CrosshairToWorldLocation(FVector& OutLocation) const;
+
+private:
+	/**
+	 * Handle OnDeath broadcast from controlled Tank.
+	 * @see ATank
+	 */
 	UFUNCTION()
-		virtual void HandleTankOnDeath();
+		void HandleTankOnDeath();
+
+	// Events
+public:
+	/**
+	 * Event called at the end of BeginPlay.
+	 * @see BeginPlay()
+	 */
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = "Controller")
+		void OnBeginPlayEnd();
 
 	// Getters/setters
 public:
