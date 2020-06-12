@@ -13,12 +13,9 @@ AProjectile::AProjectile()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
-	Root = CreateDefaultSubobject<USceneComponent>(FName("Root"));
-	SetRootComponent(Root);
-
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("ProjectileMesh"));
 	ProjectileMesh->SetNotifyRigidBodyCollision(true);
-	ProjectileMesh->SetupAttachment(RootComponent);
+	SetRootComponent(ProjectileMesh);
 
 	LaunchBlast = CreateDefaultSubobject<UParticleSystemComponent>(FName("LaunchBlast"));
 	LaunchBlast->SetAutoActivate(false);
@@ -29,6 +26,7 @@ AProjectile::AProjectile()
 	ImpactBlast->SetupAttachment(RootComponent);
 
 	ExplosionForce = CreateDefaultSubobject<URadialForceComponent>(FName("ExplosionForce"));
+	ExplosionForce->SetAutoActivate(false);
 	ExplosionForce->SetupAttachment(RootComponent);
 
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(FName("ProjectileMovement"));
