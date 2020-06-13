@@ -55,7 +55,8 @@ private:
 		float ReloadSeconds = 3.0f;
 
 	/** The last time, in seconds since the beginning of the game, that a projectile has been fired. */
-	double LastFireTime = 0.0;
+	UPROPERTY()
+		double LastFireTime = 0.0;
 
 	/** The maximum number of ammunitions that can be fired. */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, BlueprintGetter = GetMaxNumberOfAmmo, Category = "TankAimingComponent|Firing", meta = (AllowPrivateAccess = true))

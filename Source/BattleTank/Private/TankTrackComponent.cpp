@@ -19,9 +19,25 @@ void UTankTrackComponent::TickComponent(float DeltaTime, enum ELevelTick TickTyp
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-void UTankTrackComponent::SetThrottle(float Value)
+void UTankTrackComponent::ApplyDrivingForce(const float Throttle)
 {
-	float Throttle = FMath::Clamp<float>(Value, -1.0f, 1.0f);
+	const TArray<ASprungWheel*> Wheels = GetWheels();
+
+	const float ForceApplied = Throttle * MaxDrivingForce;
+	const float ForcePerWheel = ForceApplied / Wheels.Num();
+
+	for (ASprungWheel* Wheel : Wheels)
+	{
+		if (Wheel)
+		{
+			Wheel->AddDrivingForce(ForcePerWheel);
+		}
+	}
+}
+
+void UTankTrackComponent::SetThrottle(const float Value)
+{
+	const float Throttle = FMath::Clamp<float>(Value, -1.0f, 1.0f);
 
 	ApplyDrivingForce(Throttle);
 }
@@ -33,10 +49,10 @@ TArray<ASprungWheel*> UTankTrackComponent::GetWheels() const
 
 	GetChildrenComponents(false, Children);
 
-	for (USceneComponent* Child : Children)
+	for (const USceneComponent* Child : Children)
 	{
-		USpawnPoint* SpawnPoint = Cast<USpawnPoint>(Child);
-		if (SpawnPoint) 
+		const USpawnPoint* SpawnPoint = Cast<USpawnPoint>(Child);
+		if (SpawnPoint)
 		{
 			ASprungWheel* Wheel = Cast<ASprungWheel>(SpawnPoint->GetSpawnedActor());
 			if (Wheel)
@@ -47,20 +63,4 @@ TArray<ASprungWheel*> UTankTrackComponent::GetWheels() const
 	}
 
 	return Wheels;
-}
-
-void UTankTrackComponent::ApplyDrivingForce(float Throttle)
-{
-	TArray<ASprungWheel*> Wheels = GetWheels();
-
-	float ForceApplied = Throttle * MaxDrivingForce;
-	float ForcePerWheel = ForceApplied / Wheels.Num();
-
-	for (ASprungWheel* Wheel : Wheels)
-	{
-		if (Wheel)
-		{
-			Wheel->AddDrivingForce(ForcePerWheel);
-		}
-	}
 }

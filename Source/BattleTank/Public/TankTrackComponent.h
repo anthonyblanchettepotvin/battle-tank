@@ -10,45 +10,50 @@
 class ASprungWheel;
 
 /**
- * TankTrackComponent implements the behavior of a tank track.
+ * TankTrackComponent implements the behavior of a Tank track.
+ * @see ATank
  */
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class BATTLETANK_API UTankTrackComponent : public UStaticMeshComponent
 {
 	GENERATED_BODY()
 
+	// Constructors
 public:
 	UTankTrackComponent();
 
-protected:
 	// Properties
-	/** Max force in newtons output by the track. */
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Track")
-		float MaxDrivingForce = 400000.0f; // Assume that the tank is 40 tons and acceleration is 1 g (9.81 m/s2)
+private:
+	/** Max driving force in newtons applied by the track's motion. */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Track", meta = (AllowPrivateAccess = true))
+		float MaxDrivingForce = 400000.0f;
 
-	// Functions
 	// ~ Start UStaticMeshComponent Interface
+protected:
 	virtual void BeginPlay() override;
 
 public:
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	// ~ End UStaticMeshComponent Interface
 
+	// Functions
+private:
+	/**
+	 * Apply the MaxDrivingForce, multiplied by Throttle, in the forward direction of the track. 
+	 * This simulates the track rolling and pulling/pushing the tank forward/backward.
+	 * @param Throttle The intensity of the MaxDrivingForce to be applied
+	 * @see MaxDrivingForce
+	 * @note The Throttle is clamped to [-1..1]
+	 */
+	void ApplyDrivingForce(const float Throttle);
+
 	// Getters/setters
+public:
 	/** Setter for Throlle */
 	UFUNCTION(BlueprintCallable, Category = "Track")
-		void SetThrottle(float Value);
+		void SetThrottle(const float Value);
 
 	/** Getter for Wheels */
 	UFUNCTION(BlueprintPure, Category = "Track")
 		TArray<ASprungWheel*> GetWheels() const;
-
-private:
-	/**
-	 * Apply a force in the forward/backward direction of the track. 
-	 * This simulates the track rolling and pulling/pushing the tank forward/backward. 
-	 * A Throttle of -1 means the track is pushing the tank backward. 
-	 * A Throttle of 1 means the track is pulling the tank forward.
-	 */
-	void ApplyDrivingForce(float Throttle);
 };
