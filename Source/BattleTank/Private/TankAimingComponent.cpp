@@ -32,7 +32,7 @@ void UTankAimingComponent::Initialize(UTankBarrelComponent* NewBarrel, UTankTurr
 	TurretRef = NewTurret;
 }
 
-void UTankAimingComponent::AimAtLocation(const FVector Location)
+void UTankAimingComponent::AimAtLocation(const FVector TargetLocation)
 {
 	if (!BarrelRef || !TurretRef) { return; }
 	
@@ -43,7 +43,7 @@ void UTankAimingComponent::AimAtLocation(const FVector Location)
 		this,
 		LaunchVelocity,
 		StartLocation,
-		Location,
+		TargetLocation,
 		InitialProjectileSpeed,
 		false,
 		0.0f,

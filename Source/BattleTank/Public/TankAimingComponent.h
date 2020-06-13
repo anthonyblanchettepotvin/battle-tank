@@ -154,6 +154,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "TankAimingComponent|Aiming")
 		ETankAimingState GetState() const;
 
+	/** Getter for AimDirection */
 	UFUNCTION(BlueprintPure, Category = "TankAimingComponent|Aiming")
 		FVector GetAimDirection() const;
 

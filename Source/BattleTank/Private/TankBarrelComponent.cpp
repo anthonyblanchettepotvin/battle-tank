@@ -2,22 +2,27 @@
 
 #include "TankBarrelComponent.h"
 
-void UTankBarrelComponent::Elevate(float RelativeSpeed)
+UTankBarrelComponent::UTankBarrelComponent()
 {
-	float PitchChange = GetAngularSpeed(RelativeSpeed) * GetWorld()->DeltaTimeSeconds;
+	PrimaryComponentTick.bCanEverTick = false;
+}
 
-	float CurrentPitch = GetRelativeRotation().Pitch;
+void UTankBarrelComponent::Elevate_Implementation(const float RelativeSpeed)
+{
+	const float PitchChange = CalculateAngularSpeed(RelativeSpeed) * GetWorld()->DeltaTimeSeconds;
+
+	const float CurrentPitch = GetRelativeRotation().Pitch;
 	float NewPitch = CurrentPitch + PitchChange;
 	NewPitch = FMath::Clamp<float>(NewPitch, MinElevationDegrees, MaxElevationDegrees);
 
-	FRotator NewRotation = { NewPitch, 0.0f, 0.0f };
+	const FRotator NewRotation = { NewPitch, 0.0f, 0.0f };
 
 	SetRelativeRotation(NewRotation);
 }
 
-float UTankBarrelComponent::GetAngularSpeed(float RelativeSpeed)
+float UTankBarrelComponent::CalculateAngularSpeed(const float RelativeSpeed)
 {
-	float ClampedRelativeSpeed = FMath::Clamp<float>(RelativeSpeed, -1.0f, 1.0f);
+	const float ClampedRelativeSpeed = FMath::Clamp<float>(RelativeSpeed, -1.0f, 1.0f);
 
 	return MaxDegreesPerSecond * ClampedRelativeSpeed;
 }

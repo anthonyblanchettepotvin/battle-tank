@@ -2,21 +2,26 @@
 
 #include "TankTurretComponent.h"
 
-void UTankTurretComponent::Rotate(float RelativeSpeed)
+UTankTurretComponent::UTankTurretComponent()
 {
-	float YawChange = GetAngularSpeed(RelativeSpeed) * GetWorld()->DeltaTimeSeconds;
+	PrimaryComponentTick.bCanEverTick = false;
+}
 
-	float CurrentYaw = GetRelativeRotation().Yaw;
-	float NewYaw = CurrentYaw + YawChange;
+void UTankTurretComponent::Rotate_Implementation(const float RelativeSpeed)
+{
+	const float YawChange = CalculateAngularSpeed(RelativeSpeed) * GetWorld()->DeltaTimeSeconds;
 
-	FRotator NewRotation = { 0.0f, NewYaw, 0.0f };
+	const float CurrentYaw = GetRelativeRotation().Yaw;
+	const float NewYaw = CurrentYaw + YawChange;
+
+	const FRotator NewRotation = { 0.0f, NewYaw, 0.0f };
 
 	SetRelativeRotation(NewRotation);
 }
 
-float UTankTurretComponent::GetAngularSpeed(float RelativeSpeed)
+float UTankTurretComponent::CalculateAngularSpeed(float RelativeSpeed)
 {
-	float ClampedRelativeSpeed = FMath::Clamp<float>(RelativeSpeed, -1.0f, 1.0f);
+	const float ClampedRelativeSpeed = FMath::Clamp<float>(RelativeSpeed, -1.0f, 1.0f);
 
-	return ClampedRelativeSpeed * MaxDegreesPerSecond;
+	return MaxDegreesPerSecond * ClampedRelativeSpeed;
 }
