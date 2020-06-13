@@ -76,7 +76,7 @@ private:
 
 	/**
 	 * Reference to the TankTurretComponent of the owning Tank.
-	 * @note This is set by calling Initialize
+	 * @note This is set by calling Initialize()
 	 * @see UTankTurretComponent
 	 * @see Initialize(UTankBarrelComponent* NewBarrel, UTankTurretComponent* NewTurret)
 	 */
@@ -102,7 +102,6 @@ public:
 	 * @see UTankTurretComponent
 	 */
 	UFUNCTION(BlueprintCallable, Category = "TankAimingComponent")
-
 		virtual void Initialize(UTankBarrelComponent* NewBarrel, UTankTurretComponent* NewTurret);
 
 	/** Tell the component to fire a projectile. */
