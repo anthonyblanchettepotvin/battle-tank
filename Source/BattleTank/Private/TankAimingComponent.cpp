@@ -23,22 +23,7 @@ void UTankAimingComponent::TickComponent(float DeltaTime, enum ELevelTick TickTy
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (IsOutOfAmmo())
-	{
-		State = ETankAimingState::OutOfAmmo;
-	}
-	else if (IsReloading())
-	{
-		State = ETankAimingState::Reloading;
-	}
-	else if (IsAiming())
-	{
-		State = ETankAimingState::Aiming;
-	}
-	else
-	{
-		State = ETankAimingState::Locked;
-	}
+	EvaluateState();
 }
 
 void UTankAimingComponent::Initialize(UTankBarrelComponent* NewBarrel, UTankTurretComponent* NewTurret)
@@ -47,17 +32,14 @@ void UTankAimingComponent::Initialize(UTankBarrelComponent* NewBarrel, UTankTurr
 	TurretRef = NewTurret;
 }
 
-void UTankAimingComponent::AimAtLocation(FVector Location)
+void UTankAimingComponent::AimAtLocation(const FVector Location)
 {
-	if (!ensure(BarrelRef && TurretRef)) { return; }
+	if (!BarrelRef || !TurretRef) { return; }
 	
 	FVector LaunchVelocity = { 0.0f, 0.0f, 0.0f };
-	FVector StartLocation = BarrelRef->GetSocketLocation(FName("Muzzle"));
-
-	TArray<AActor*> ActorsToIgnore;
-	ActorsToIgnore.Add(GetOwner());
-
-	bool bSolutionFound = UGameplayStatics::SuggestProjectileVelocity(
+	const FVector StartLocation = BarrelRef->GetSocketLocation(FName("Muzzle"));
+	const TArray<AActor*> ActorsToIgnore = {GetOwner()};
+	const bool bSolutionFound = UGameplayStatics::SuggestProjectileVelocity(
 		this,
 		LaunchVelocity,
 		StartLocation,
@@ -80,17 +62,36 @@ void UTankAimingComponent::AimAtLocation(FVector Location)
 	}
 }
 
-void UTankAimingComponent::MoveToAimTowards(FVector TargetDirection)
+void UTankAimingComponent::EvaluateState_Implementation()
 {
-	if (!ensure(BarrelRef && TurretRef)) { return; }
+	if (IsOutOfAmmo())
+	{
+		State = ETankAimingState::OutOfAmmo;
+	}
+	else if (IsReloading())
+	{
+		State = ETankAimingState::Reloading;
+	}
+	else if (IsAiming())
+	{
+		State = ETankAimingState::Aiming;
+	}
+	else
+	{
+		State = ETankAimingState::Locked;
+	}
+}
 
-	auto CurrentRotation = BarrelRef->GetForwardVector().Rotation();
-	auto TargetRotation = TargetDirection.Rotation();
-	auto DeltaRotation = TargetRotation - CurrentRotation;
+void UTankAimingComponent::MoveToAimTowards_Implementation(const FVector TargetDirection)
+{
+	if (!BarrelRef || !TurretRef) { return; }
 
-	float BarrelRotation = DeltaRotation.Pitch;
+	const auto CurrentRotation = BarrelRef->GetForwardVector().Rotation();
+	const auto TargetRotation = TargetDirection.Rotation();
+	const auto DeltaRotation = TargetRotation - CurrentRotation;
+
+	const float BarrelRotation = DeltaRotation.Pitch;
 	float TurretRotation = DeltaRotation.Yaw;
-
 	if (FMath::Abs(TurretRotation) > 180.0f)
 	{
 		TurretRotation *= -1;
@@ -102,7 +103,7 @@ void UTankAimingComponent::MoveToAimTowards(FVector TargetDirection)
 
 void UTankAimingComponent::Fire()
 {
-	if (!ensure(Projectile && BarrelRef)) { return; }
+	if (!Projectile || !BarrelRef) { return; }
 
 	if (State == ETankAimingState::Reloading || State == ETankAimingState::OutOfAmmo) { return; }
 
@@ -115,22 +116,22 @@ void UTankAimingComponent::Fire()
 	NewProjectile->Launch(InitialProjectileSpeed);
 
 	LastFireTime = FPlatformTime::Seconds();
-	--CurrentNumberOfAmmo;
+	CurrentNumberOfAmmo--;
 }
 
 bool UTankAimingComponent::IsOutOfAmmo() const
 {
-	return CurrentNumberOfAmmo == 0;
+	return CurrentNumberOfAmmo <= 0;
 }
 
 bool UTankAimingComponent::IsReloading() const
 {
-	return (FPlatformTime::Seconds() - LastFireTime) < ReloadSpeed;
+	return (FPlatformTime::Seconds() - LastFireTime) < ReloadSeconds;
 }
 
 bool UTankAimingComponent::IsAiming() const
 {
-	if (!ensure(BarrelRef)) { return false; }
+	if (!BarrelRef) { return false; }
 
 	return !AimDirection.Equals(BarrelRef->GetForwardVector().GetSafeNormal(), 0.01);
 }
@@ -138,6 +139,11 @@ bool UTankAimingComponent::IsAiming() const
 ETankAimingState UTankAimingComponent::GetState() const
 {
 	return State;
+}
+
+FVector UTankAimingComponent::GetAimDirection() const
+{
+	return AimDirection;
 }
 
 int32 UTankAimingComponent::GetMaxNumberOfAmmo() const
